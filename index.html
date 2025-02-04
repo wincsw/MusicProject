@@ -1,0 +1,192 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>
+			Clusters
+		</title>
+		<link rel="stylesheet" type="text/css" href="css/app.css">                        
+	</head>
+	<body 
+		style="background-color: rgb(200, 195, 187);" 
+		onload   = "clusters = new Clusters(); clusters.initialize();"  
+		onresize = "clusters.resize();"		
+	>
+		<canvas id = "clustersCanvas" ></canvas>		
+		<script type = "text/javascript" src = "js/Math.js" 		></script>
+		<script type = "text/javascript" src = "js/Vector2D.js" 	></script>
+		<script type = "text/javascript" src = "js/GA.js"	 		></script>
+		<script type = "text/javascript" src = "js/Species.js" 		></script>
+		<script type = "text/javascript" src = "js/Particle.js" 	></script>
+		<script type = "text/javascript" src = "js/Ecosystem.js"	></script>
+		<script type = "text/javascript" src = "js/Sensor.js"		></script>
+		<script type = "text/javascript" src = "js/ForceEditor.js" 	></script>
+		<script type = "text/javascript" src = "js/View.js" 		></script>
+		<script type = "text/javascript" src = "js/Clusters.js" 	></script>
+        <div id = "mainPanel">
+            <div id = "mainTitle">
+                Clusters
+            </div> 
+            <div id = "subTitle">
+				A life-like particle system with ambiguous entities created by 			
+				<a href="http://www.ventrella.com" target="_blank" style="color: rgb( 20, 50, 120);" >ventrella.com</a>
+			</div> 
+			
+			<div id = "ecosystemPanel">			
+				<div id = "EcosystemLabel">
+					<hr>
+					choose ecosystem:
+				</div> 
+
+				<button id = "buttonPollack"   	class = "buttonClass" onmousedown  = "clusters.onButtonSelected( id );" >Pollack		</button>  
+				<button id = "buttonBang"   	class = "buttonClass" onmousedown  = "clusters.onButtonSelected( id );" >** random **	</button>  
+				<button id = "buttonGems"   	class = "buttonClass" onmousedown  = "clusters.onButtonSelected( id );" >gems			</button>   
+				<button id = "buttonAlliances"  class = "buttonClass" onmousedown  = "clusters.onButtonSelected( id );" >alliances		</button>   
+				<button id = "buttonMenace"   	class = "buttonClass" onmousedown  = "clusters.onButtonSelected( id );" >red menace		</button>   
+				<button id = "buttonAcrobats"   class = "buttonClass" onmousedown  = "clusters.onButtonSelected( id );" >acrobats		</button>   
+				<button id = "buttonMitosis"	class = "buttonClass" onmousedown  = "clusters.onButtonSelected( id );" >mitosis		</button>   
+				<button id = "buttonPlanets"	class = "buttonClass" onmousedown  = "clusters.onButtonSelected( id );" >planets		</button>   
+				<button id = "buttonPurple"  	class = "buttonClass" onmousedown  = "clusters.onButtonSelected( id );" >stigmergy		</button>   
+				<button id = "buttonField"  	class = "buttonClass" onmousedown  = "clusters.onButtonSelected( id );" >field			</button>   
+				<button id = "buttonSimplify"  	class = "buttonClass" onmousedown  = "clusters.onButtonSelected( id );" >simplify		</button>   
+				<button id = "buttonThrob"	  	class = "buttonClass" onmousedown  = "clusters.onButtonSelected( id );" >spinners		</button>
+			</div>					
+				
+			<div id = "tweakPanel">			
+				<div id = "TweakLabel">
+					<hr>
+					tweak ecosystem:
+				</div> 
+				<canvas id = "editCanvas"></canvas> 
+			
+				<!--
+				<div id = "SaveLabel">
+					save ecosystem:
+				</div> 
+				-->
+			
+				<div id = "numParticlesSliderLabel" class = "labelClass" >number of particles</div>
+				<input 
+					type            = "range" 
+					id              = "numParticlesSlider"    
+					class           = "sliderClass"    
+					name            = "numParticlesSlider"      
+					min				= 0
+					max				= 1000
+					step            = 1
+					autocomplete    = "off" 
+					oninput         = "clusters.onSliderChanged( id )"
+				>
+				<input 
+					id 		= "numParticlesInput"
+					class 	= "inputClass"
+					type	= "text" 
+					onkeyup = "clusters.addToInputString( id, event )" 
+				>
+				<div id = "numSpeciesSliderLabel" class = "labelClass" >number of species</div>
+				<input 
+					type            = "range" 
+					id              = "numSpeciesSlider"    
+					class           = "sliderClass"    
+					name            = "numSpeciesSlider"      
+					min				= 0
+					max				= 1000
+					step            = 1
+					autocomplete    = "off" 
+					oninput         = "clusters.onSliderChanged( id )"
+				>			
+				<input 
+					id 		= "numSpeciesInput"
+					class 	= "inputClass"
+					type	= "text" 
+					onkeyup = "clusters.addToInputString( id, event )" 
+				>
+				<div id = "motionBlurSliderLabel" class = "labelClass" >trails</div>
+				<input 
+					type            = "range" 
+					id              = "motionBlurSlider"    
+					class           = "sliderClass"    
+					name            = "motionBlurSlider"      
+					min				= 0
+					max				= 1000
+					step            = 1
+					autocomplete    = "off" 
+					oninput         = "clusters.onSliderChanged( id )"
+				>
+				<input 
+					id 		= "motionBlurInput"
+					class 	= "inputClass"
+					type	= "text" 
+					onkeyup = "clusters.addToInputString( id, event )" 
+				>
+				<button id = "buttonColors"		class = "buttonClass" onmousedown  = "clusters.onButtonSelected( id );" >random colors		</button> 			
+				<button id = "buttonFreeze"		class = "buttonClass" onmousedown  = "clusters.onButtonSelected( id );" >freeze/unfreeze	</button>   
+				<button id = "buttonZap"		class = "buttonClass" onmousedown  = "clusters.onButtonSelected( id );" >zap				</button>   
+			</div>
+
+			<div id = "statusLabel" 	>
+				<hr>
+					
+				<!--<b>What is it?</b>-->
+				<!--
+				<a href="intro.html" target="_blank" style="color: rgb( 20, 70, 150);" >Here's an introduction to Clusters:</a> 
+				<br>				
+				<br>			
+				-->
+				<a href="intro.html" target="_blank" ><img src = "images/finger.png" width = 300></img></a>	
+				<!--
+				<a href="intro.html" target="_blank" style="color: rgb( 20, 70, 150);" ><big>Introduction to Clusters</big></a> 
+				-->
+				<br>
+				
+				This 
+				<a href="intro.html" target="_blank" >introduction</a>	
+				explains how the algorithm works. It includes some background, and a set of experiments.
+				<br>
+				<br>
+				<b>History</b>
+				<br>
+				I created Clusters in 2016 and made it available on ventrella.com.
+				The following year I worked with the guys at Leap Motion on implementing Clusters 
+				in 3D for virtual reality, using hand/finger controls. 
+				<br>
+				<br>
+				Clusters was the inspiration for 
+				<a href="https://particle-life.com/" target="_blank" style="color: rgb( 20, 50, 120);" >Particle Life</a> by Tom Mohr.
+				Clusters was  also the inspiration for 
+				<a href="https://ciphrd.com/2020/06/01/atomic-clusters-a-molecular-particle-based-simulation/" target="_blank" style="color: rgb( 20, 50, 120);" >Atomic Clusters</a> by ciphrd.
+				<br>
+				<br>				
+				<a href="https://vimeo.com/222974687" target="_blank" style="color: rgb( 20, 50, 120);" >Video of me explaining Clusters</a>
+				<br>
+				<br>
+				<a href="https://www.youtube.com/watch?v=2GNmNjME2vg" target="_blank" style="color: rgb( 20, 50, 120);" >Particles Video from Leap Motion</a>
+				<br>
+				<br>
+				<a href="https://vimeo.com/275016027" target="_blank" style="color: rgb( 20, 50, 120);" >My Leap Motion video</a>
+				<br>
+				<br>
+				Currently there is no way to save and load ecosystems, or use the genetic algorithm. 
+				These features (and others) are under development as of October, 2024. Contact me at 
+				jeffrey@ventrella.com for status or to offer suggestions or...assistance :) 
+				<br>
+				<hr>
+				<br>
+				<a href="http://www.ventrella.com" target="_blank" style="color: rgb( 20, 50, 120);" >Ventrella.com</a>
+				
+			</div>			
+
+			<!--			
+			<div    id = "speciesLabel" 	class = "labelClass" >Force fields:</div>			
+			-->
+			
+			<!--
+			<button id = "buttonSave"   	class = "buttonClass" onmousedown  = "clusters.onButtonSelected( id );" >save ecosystem		</button>  
+			<button id = "buttonGA"   		class = "buttonClass" onmousedown  = "clusters.onButtonSelected( id );" >Evolve				</button>  
+			<button id = "buttonGAGood"   	class = "buttonClass" onmousedown  = "clusters.onButtonSelected( id );" >good				</button>  
+			<button id = "buttonGANext"   	class = "buttonClass" onmousedown  = "clusters.onButtonSelected( id );" >next				</button>  
+			-->
+			
+		</div>
+		
+	</body>
+</html>

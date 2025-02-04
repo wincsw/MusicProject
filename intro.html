@@ -1,0 +1,1217 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>
+			Intro to Clusters
+		</title>
+	</head>
+	<body 
+		style="background-color: rgb(255, 255, 245);" 
+
+		onload   = "clusters = new Clusters(); clusters.setCanvasSize( 300, 200 );  clusters.initialize(); adjustCanvas();"
+	>
+	
+		<canvas id = "clustersCanvas" width="300" height="200" style="border: 2px solid black; background-color: #f0f0f0; display: block;"></canvas>		
+		
+		<script type = "text/javascript" src = "js/Math.js" 		></script>
+		<script type = "text/javascript" src = "js/Vector2D.js" 	></script>
+		<script type = "text/javascript" src = "js/GA.js"	 		></script>
+		<script type = "text/javascript" src = "js/Species.js" 		></script>
+		<script type = "text/javascript" src = "js/Particle.js" 	></script>
+		<script type = "text/javascript" src = "js/Ecosystem.js"	></script>
+		<script type = "text/javascript" src = "js/Sensor.js"		></script>
+		<script type = "text/javascript" src = "js/ForceEditor.js" 	></script>
+		<script type = "text/javascript" src = "js/View.js" 		></script>
+		<script type = "text/javascript" src = "js/Clusters.js" 	></script>
+        <div id = "mainPanel">
+				
+        <center>
+        	<br>
+        	<br>
+        	<br>
+			<table>
+				<tr>
+					<td valign = top width = 500  >		
+						<a href="https://ventrella.com/Clusters/" target="_blank" >
+							<font size = 7 face='Arial' color=#778899><b>Clusters</b></font>
+						</a> 
+						<br>   
+						<font size = 5 face='Arial' color=#224433><b>An emergent particle system <br>with ambiguous entities</b></font>		    
+						<br>
+						<br>
+						<a href="https://ventrella.com/Clusters/" target="_blank" >
+							<font size = 3 face='Arial' color=#224433>Jeffrey Ventrella </font> 
+						</a>  (latest update: December, 2024)
+						<br>
+						<br>
+						<font size = 3 face='Arial' color=#224433>	    
+							Clusters was the inspiration for 
+							<a href="https://particle-life.com/" target="_blank" style="color: rgb( 20, 50, 120);" >Particle Life</a> by Tom Mohr.
+							<br>
+							Clusters was  also the inspiration for 
+							<a href="https://ciphrd.com/2020/06/01/atomic-clusters-a-molecular-particle-based-simulation/" 
+							target="_blank" style="color: rgb( 20, 50, 120);" >Atomic Clusters</a> by ciphrd.
+							<br>
+							Clusters was the basis for the
+							<a href="https://www.fxhash.xyz/generative/3377" 
+							target="_blank" style="color: rgb( 20, 50, 120);" > "Circus of Life"</a> project.
+							<br>
+							<a href="https://vimeo.com/222974687" target="_blank" style="color: rgb( 20, 50, 120);" >
+							Here's a video of me explaining Clusters</a>
+							<br>
+							<a href="https://www.youtube.com/watch?v=2GNmNjME2vg" target="_blank" style="color: rgb( 20, 50, 120);" >
+							Here's the Particles Video from Leap Motion</a>
+							<br>
+							<a href="https://vimeo.com/275016027" target="_blank" style="color: rgb( 20, 50, 120);" >Here's my Leap Motion video</a>
+							<br>
+							<br>
+						</font>
+						<font size = 3 face='Arial' color=#224433>Play with Clusters ->
+							<a href="http://www.ventrella.com/Clusters" target="_blank" >Ventrella.com/Clusters</a> 
+						</font>
+					</td>
+					<td >		
+						<!-- set canvas to be here -->
+						<br>
+						<font size = 2 face='Arial' color=#224433>(click/touch to randomize)</font>
+						<button id = "buttonFreeze" class = "buttonClass" onmousedown  = "clusters.togglePause();" >pause</button>  						
+					</td>
+				</tr>
+			</table>
+        </center>
+
+		<script>
+			// JavaScript function to move the canvas into the table after page load
+			function adjustCanvas() {
+				// Get the canvas element
+				var canvas = document.getElementById('clustersCanvas');
+				
+				// Find the second <td> (the placeholder where canvas should go)
+				var tableCell = document.querySelector('table tr td:nth-child(2)');
+				
+				// Append the canvas to the second table cell
+				tableCell.appendChild(canvas);
+				
+				// Adjust canvas drawing surface size
+				canvas.width = 300;  // Set the internal drawing width (in pixels)
+				canvas.height = 200; // Set the internal drawing height (in pixels)
+
+				// Adjust the display size of the canvas (via CSS)
+				canvas.style.width = "300px";  // Set visual display width (can be responsive if needed)
+				canvas.style.height = "200px"; // Set visual display height (can be responsive if needed)
+				
+clusters.loadEcosystem( ECO_SMALL_BANG );				
+			}
+		</script>		
+		
+		<script>
+			document.getElementById('clustersCanvas').addEventListener('click', function(event) {
+				//var rect = this.getBoundingClientRect();
+				//var mouseX = event.clientX - rect.left;
+				//var mouseY = event.clientY - rect.top;
+				//console.log('Mouse clicked at:', mouseX, mouseY);
+		    	clusters.loadEcosystem( ECO_SMALL_BANG );
+			});
+		</script>		
+		
+        <center>
+			<table>
+				<tr>
+					<td valign = top width = 800  >		        
+						<font size = 4 face='Arial' color=#336622>
+							<br>
+							<hr>
+							<em>"Sometimes it's hard for me to believe that all of the 
+							complexity that we see in our life can arise from particle 
+							physics. Even humans, thoughts, and emotions. But for me, 
+							seeing how Particle Life can already create these lifelike 
+							structures in a much simpler universe makes all of it a bit 
+							more believable."
+							</em>
+							<br>
+						</font>	
+						<font size = 3 face='Arial' color=#224433>
+							  - - <a href="https://tommohr.dev" target="_blank" >Tom Mohr</a>,
+							  creator of 
+							  <a href="https://particle-life.com/" target="_blank" ><em>Particle Life</em></a>
+							   (transcription from 
+					 		<a href="https://www.youtube.com/watch?v=p4YirERTVF0" target="_blank" >this video)</a>								 
+							<br>
+							<hr>
+							<br>
+							<br>
+						</font>	
+					</td>
+				</tr>
+			</table>
+        
+        
+        
+<!--        
+			<table>
+				<tr>
+					<td valign = top width = 500  >		
+						<a href="https://ventrella.com/Clusters/" target="_blank" >
+							<font size = 6 face='Arial' color=#556688><b>Clusters</b></font>
+						</a> 
+						<br>   
+						<font size = 4 face='Arial' color=#224433><b>An emergent particle system with ambiguous entities</b></font>		    
+						<br>
+						<br>
+						<font size = 3 face='Arial' color=#224433>Jeffrey Ventrella, 2024</font>	
+(<a href="http://www.ventrella.com" target="_blank" >Ventrella.com</a>)
+							    
+					</td>
+					<td valign = top width = 300  >		
+						<canvas id = "demoCanvas" width = 300 height = 200 data1 = 11 ></canvas>
+					</td>
+				</tr>
+			</table>
+-->
+
+
+
+			<table>
+				<tr>
+					<td valign = top width = 800  >		
+						<font size = 5 face='Arial' color=#224433>
+							 <b>1. A gentle Introduction</b> 
+						</font>	
+					</td>
+				</tr>
+			</table>
+			<br>
+			<br>
+			<!--
+			<table>
+				<tr>
+					<td valign = top width = 400  >		
+						<font size = 4 face='Arial' color=#224433>
+							Here's how it works: 
+						</font>	
+					</td>
+					<td width = 400  >		
+					</td>
+				</tr>
+			</table>
+			-->
+			<table>
+				<tr>
+					<td valign = top width = 400  >		
+						<font size = 4 face='Arial' color=#224433>
+							<b>YOU</b> are a green dot. 
+						</font>	
+					</td>
+					</td>
+					<td width = 20  ></td>
+					<td width = 380  >		
+						<img src = "images/green-dot.png" width = 200></img></a>	
+					</td>
+				</tr>
+			</table>
+			<br>
+			<table>
+				<tr>
+					<td valign = top width = 400  >		
+						<font size = 4 face='Arial' color=#224433>
+							You love yellow dots. Whenever you see a yellow dot, you move towards it.  
+						</font>	
+					</td>
+					</td>
+					<td width = 20  ></td>
+					<td width = 380  >		
+						<img src = "images/green-yellow.png" width = 200></img></a>	
+					<td>
+				</tr>
+			</table>
+			<br>
+			<table>
+				<tr>
+					<td valign = top width = 400  >		
+						<font size = 4 face='Arial' color=#224433>
+							But yellow dots are afraid of green dots. 
+							So the yellow dot runs away from you. (Life isn't fair). 
+						</font>	
+					</td>
+					<td valign = top width = 20  ></td>
+					<td valign = top width = 380  >		
+						<img src = "images/green-yellow-chase.png" width = 200></img></a>	
+					</td>
+				</tr>
+			</table>
+			<br>
+			<table>
+				<tr>
+					<td valign = top width = 400  >		
+						<font size = 4 face='Arial' color=#224433>
+							You also love blue dots and blue dots love green dots. So whenever you meet a blue dot,
+							you both gravitate towards each other. 
+						</font>	
+					</td>
+					<td width = 20  ></td>
+					<td width = 380  >		
+						<img src = "images/green-blue.png" width = 200></img></a>	
+					</td>
+				</tr>
+			</table>
+			<br>
+			<table>
+				<tr>
+					<td valign = top width = 400  >		
+						<font size = 4 face='Arial' color=#224433>
+							What happens if a yellow dot stumbles onto your green-blue 
+							love-fest? It's afraid of you but it <em><b>loves</b></em> blue dots. 
+							Meanwhile the blue dot has just noticed a red dot 
+							which it finds very attractive. Now what happens?
+						</font>	
+					</td>
+					<td width = 20  ></td>
+					<td width = 380  >		
+						<img src = "images/stumble.png" width = 200></img></a>	
+					</td>
+				</tr>
+			</table>	
+			<table>
+				<tr>
+					<td  valign = top width = 400  >		
+						<font size = 4 face='Arial' color=#224433>
+							<b>It's a complex system</b>
+						</font>	
+						<br>
+						<font size = 4 face='Arial' color=#224433>
+							I'll leave that question unanswered. (It's complicated). 
+							Now imagine that there are six kinds of dots (red, orange, 
+							yellow, green, blue, and violet). Each kind of dot has associated 
+							attractions or repulsions to all the other kinds of dots 
+							(including its own kind). 
+						</font>	
+					</td>
+					<td width = 20  ></td>
+					<td width = 380  >		
+						<img src = "images/six-colors.png" width = 200></img></a>	
+					</td>
+				</tr>
+			</table>
+			<br>
+			<table>
+				<tr>
+					<td valign = top width = 400 >		
+						<font size = 4 face='Arial' color=#224433>
+							Every kind of dot has a unique way of reacting to every 
+							other kind of dot. These are <em>force fields</em>, and they cause 
+							dots to attract or repel when they get near each other. These 
+							forces can be weak or strong. So, if there are six kinds of 
+							dots, then there are 6x6 = <b>36</b> unique 
+							kinds of force fields - all acting in unison.							
+						</font>	
+					</td>
+					<td width = 20  ></td>
+					<td width = 380  >		
+						<img src = "images/graph.png" width = 200></img></a>	
+					</td>
+				</tr>
+			</table>
+			<br>
+			<br>
+			<table>
+				<tr>
+					<td valign = top width = 800  >		
+						<font size = 5 face='Arial' color=#224433>
+							<b>2. Is it biology or is it physics?</b> 
+						</font>	
+					</td>
+				</tr>
+			</table>
+			<table>
+				<tr>
+					<td valign = top width = 800  >
+						<font size = 4 face='Arial' color=#224433>
+							It's a complex dynamical system that borrows some concepts from 
+							biology and some concepts from physics. Choose your favorite 
+							metaphor, but in either case, 
+							<a href="https://en.wikipedia.org/wiki/Emergence" target="_blank" ><em>Emergence</em></a>							
+							is the key concept here: something novel that comes into existence 
+							when <em>relatively simple</em> rules play out among <em>many</em> 
+							interacting parts. The concept of emergence can apply to both physics and biology.
+							<br>
+							<br>
+							It's remarkable how such a simple 
+							set of rules about the forces between dots can generate so many 
+							complex dynamical structures. It gets especially complex when 
+							there are thousands of dots involved. This is related to the 
+							"<a href="https://www.nature.com/articles/s42254-022-00483-x" target="_blank" ><em>More is Different</em></a>"
+							concept, proposed by theoretical physicist Philip Anderson.
+							<br>
+							<br>
+							<img src = "images/entities.png" width = 800></img></a>	
+						</font>	
+					</td>
+				</tr>
+			</table>
+			<br>
+			
+			
+			<table>
+				<tr>
+					<td valign = top width = 620 >		
+						<font size = 4 face='Arial' color=#224433>
+							We can talk about individual dots as little characters falling 
+							in and out of love, but what's amazing is that when certain 
+							clusters of different kinds of dots come together, they can 
+							act like a super-organism - like a multicellular creature that
+							can shapeshift, split, and merge with other entities. 
+							That's why I like to use the term "ambiguous entities". Fans of 
+							<a href="https://en.wikipedia.org/wiki/Slime_mold" target="_blank" ><em>plasmodial slime molds</em></a>
+							know what I'm talking about!							
+						</font>	
+					</td>
+					<td width = 20  ></td>
+					<td width = 160  >		
+						<a href="https://en.wikipedia.org/wiki/Slime_mold" target="_blank" >
+						<img src = "images/slime.png" width = 130></img></a>
+					</td>
+				</tr>
+			</table>
+			<br>
+			<table>
+				<tr>
+					<td valign = top width = 800  >
+						<font size = 4 face='Arial' color=#224433>
+							<img src = "images/gallery.png" width = 800></img></a>								
+						</font>	
+					</td>
+				</tr>
+			</table>
+			<br>
+			<table>
+				<tr>
+					<td valign = top width = 580 >		
+						<font size = 4 face='Arial' color=#224433>
+							You may also be reminded of 
+							<a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life" target="_blank" ><em>Conway's Game of Life</em></a>, 
+							in which complexity emerges from a simple 
+							set of rules being applied repeatedly over several identical 
+							elements ("automata"). Each automaton is a cell in a fixed 
+							grid and it responds to its immediate neighbors. 
+							The Clusters particle system is similar in that there are many 
+							"automata" (particles)  and a simple set of rules that determine 
+							their behaviors when they interact. Complex patterns emerge, 
+							but it is of a whole different variety than cellular automata; it has
+							<em>many</em> more degrees of freedom, and is capable of a lot of chaos.
+							<br>
+							<br>
+							This idea of an automaton responding only to its immediate 
+							neighbors is called "locality". It's an important concept in 
+							emergent systems, according to theoretical physicist 
+							<a href="https://www.preposterousuniverse.com/podcast/2024/11/11/295-solo-emergence-and-layers-of-reality/" target="_blank" >
+							Sean Carroll. 
+						</font>	
+					</td>
+					<td width = 20  ></td>
+					<td width = 200  >		
+						<a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life" target="_blank" >
+						<img src = "images/life.png" width = 200></img></a>
+					</td>
+				</tr>
+			</table>
+			<br>
+			<table>
+				<tr>
+					<td valign = top width = 590 >		
+						<font size = 5 face='Arial' color=#224433>
+							<b>3. Anatomy of a force field</b>
+						</font>	
+						<br>
+						<font size = 4 face='Arial' color=#224433>
+							Molecular engineers know very well that there are astronomically many ways that atoms can 
+							be arranged to form molecules, including all the amazing biomolecules that comprise the machinery of life on earth.
+						</font>	
+					</td>
+					<td width = 10  ></td>
+					<td width = 200  >		
+						<img src = "images/molecules.png" width = 200></img></a>	
+					</td>
+				</tr>
+			</table>
+			<br>
+			<table>
+				<tr>
+					<td valign = top width = 490 >		
+						<font size = 4 face='Arial' color=#224433>
+							Consider 
+							<a href="https://en.wikipedia.org/wiki/Interatomic_potential" target="_blank" ><em>Interatomic Forces</em></a>.
+							When a pair of atoms are close to each other, they attract, 
+							but if they get <em><b>too close</b></em>, they repel. And so 
+							they each settle into a comfortable distance. This graph plots a 
+							force field as a function of the distance between a pair of atoms, with zero at the left and 
+							approaching infinity at the right. The vertical axis represents the force 
+							(the "interatomic potential"). Forces above 
+							the horizontal line are repulsive, and forces below the line are 
+							attractive. Pairs of atoms naturally settle to the equilibrium distance.
+						</font>	
+					</td>
+					<td width = 10  ></td>
+					<td width = 300  >		
+						<img src = "images/interatomic.png" width = 300></img></a>	
+					</td>
+				</tr>
+			</table>
+			<br>
+			<table>
+				<tr>
+					<td valign = top width = 500 >		
+						<font size = 4 face='Arial' color=#224433>
+							In the real world it's way more complex than this; there 
+							are many kinds of particle forces involved, and many kinds of 
+							atoms, all of whom have different opinions on how to share 
+							electrons and whatnot. When you consider large protein 
+							molecules interacting with each other, it gets crazy complex. 
+							This is related to the field of 
+							<a href="https://en.wikipedia.org/wiki/Artificial_chemistry" target="_blank" >artificial chemistry</a>	
+							That's all I'm going to say about physics. The important 
+							take-away here is the general concept of a force-field:  
+							the way atoms (or dots, or particles) attract or repel 
+							according to their distances to each other. 
+						</font>	
+					</td>
+					<td width = 10  ></td>
+					<td width = 290  >		
+					 <a href="http://saylordotorg.github.io/text_general-chemistry-principles-patterns-and-applications-v1.0/s12-05-lewis-structures-and-covalent-.html" target="_blank" ><img src = "images/H.png" width = 270></img></a>	
+					 <br>
+
+<a href="http://saylordotorg.github.io/text_general-chemistry-principles-patterns-and-applications-v1.0/s12-05-lewis-structures-and-covalent-.html" target="_blank" ><center>(image credit)</center></img></a>	
+
+
+
+					</td>
+				</tr>
+			</table>
+			<br>
+			<table>
+				<tr>
+					<td valign = top width = 500 >		
+						<font size = 4 face='Arial' color=#224433>
+							<b>Let's break some rules</b>
+						</font>	
+						<br>
+						<font size = 4 face='Arial' color=#224433>
+							Now, according to Newton's 3rd law of motion, every action has 
+							an equal and opposite reaction. If two bodies 
+							exert forces on each other, these forces <b><em>must</em></b> 
+							have the same magnitude and they <b><em>must</em></b> have opposite directions. 
+							When two billiard balls collide, they both experience the same amount of force but in opposite directions. 						
+							<br>
+							<br>
+							The Clusters 
+							algorithm allows Newton's law to be broken; forces can be asymmetrical. And that's why one dot 
+							can chase another dot around...and the other dot just keeps 
+							running away...(forever, or until the chase scene gets interrupted by other 
+							nearby forces). This creates constant motion, as if some 
+							continual energy source were at play. So, we're not talking 
+							about physics anymore. Now we are pretending that these are self-propelled entities. 
+							<br>
+							<br>
+						<font size = 4 face='Arial' color=#224433>
+							<b>Biological metaphor</b>
+						</font>	
+						<br>
+							And that's where the biological metaphor comes in. The energy sources are 
+							"inside" of the dots (they are well-fed and socially-motivated). 
+							We have abstracted away the physics level and are now looking at 
+							these dots as very simple (and very motivated) organisms.
+							<br>
+							<br>
+							The details of locomotion
+							are abstracted away, and so we can talk about higher-level behaviors, like 
+							the way humans move through large crowds or the way cells differentiate 
+							into tissues.
+							The goal here is not to model anything specific in the real world, but 
+							to set up a dynamical system that generates patterns and behaviors 
+							that have things in common with natural systems. And yea, sometimes 
+							it just looks really cool.
+						</font>	
+					</td>
+					<td width = 5  ></td>
+					<td width = 290  >		
+						<img src = "images/organisms.png" width = 260></img></a>	
+					</td>
+				</tr>
+			</table>
+			<br>
+			<table>
+				<tr>
+					<td valign = top width = 800  >		
+
+						<font size = 5 face='Arial' color=#224433>
+							<b>4. A trail of experiments</b>
+						</font>	
+						<br>
+						<font size = 4 face='Arial' color=#224433>
+							Now I want to show a series of five algorithmic experiments
+							intended help explain how the algorithm evolved. You can select 
+							each image at left to see animated examples. These are not 
+							necessarily in chronological order.
+							
+						</font>	
+					</td>
+				</tr>
+			</table>
+			<br>			
+			<table>
+				<tr>
+					<td width = 150  >		
+  						<a href="p-system/index1.html" target="_blank" >
+  						<img src = "images/experiment-1.png" width = 150></img></a>
+						<font size = 1 face='Arial' color=#224433>
+							(select image to see example)
+						</font>	
+					</td>
+					<td width = 10  ></td>
+					<td valign = top width = 640 >		
+						<font size = 4 face='Arial' color=#224433>
+							<b>1. Simple Particle System</b>
+							<br>
+							This one's easy: I initialize a bunch of particles randomly,
+							give them each an initial random jolt of velocity, and then watch them 
+							shift until friction causes them to slow down and eventually come to rest. 
+							Particles don't know or care about each other. This is ground zero for
+							all subsequent experiments.
+						</font>	
+					</td>
+				</tr>
+			</table>
+			<br>
+			<table>
+				<tr>
+					<td width = 150  >		
+  						<a href="p-system/index2.html" target="_blank" >
+  						<img src = "images/experiment-2.png" width = 150></img></a>
+						<font size = 1 face='Arial' color=#224433>
+							(select image to see example)
+						</font>	
+					</td>
+					<td width = 10  ></td>
+					<td valign = top width = 640 >		
+						<font size = 4 face='Arial' color=#224433>
+							<b>2. Springs!</b>
+							<br>
+							Take two of these particles and draw a line between them. Make 
+							them "want" to stay a certain distance from each other. If the 
+							distance gets too small or too large, they both get forced 
+							(in opposite directions) along the line until they 
+							come to rest at the right distance, after a bit of oscillating.
+							This is just basic 
+  							<a href="https://en.wikipedia.org/wiki/Hooke%27s_law" target="_blank" >spring physics</a>.
+						</font>	
+					</td>
+				</tr>
+			</table>
+			<br>
+			
+			<table>
+				<tr>
+					<td width = 150  >		
+  						<a href="https://www.ventrella.com/ParticleFluid/" target="_blank" >
+  						<img src = "images/experiment-3.png" width = 150></img></a>
+						<font size = 1 face='Arial' color=#224433>
+							(select image to see example)
+						</font>	
+					</td>
+					<td width = 10  ></td>
+					<td valign = top width = 640 >		
+						<font size = 4 face='Arial' color=#224433>
+							<b>3. Particle Fluid</b>
+							<br>
+							You could say that one half of a spring force is the half that 
+							pushes particles apart if they get too close. Well, this half 
+							is synonymous with a <em>soft collision</em> between two particle dots (disks with radii). Packing a lot
+							of dots into a tank and giving them soft collisions creates a 
+							fluid-like effect (well, more or less, depending on the parameter settings).
+						</font>	
+					</td>
+				</tr>
+			</table>
+			<br>
+			
+			
+			<table>
+				<tr>
+					<td width = 150  >		
+  						<a href="https://www.ventrella.com/PseudoSprings/" target="_blank" >
+  						<img src = "images/experiment-4.png" width = 150></img></a>
+						<font size = 1 face='Arial' color=#224433>
+							(select image to see example)
+						</font>	
+					</td>
+					<td width = 10  ></td>
+					<td valign = top width = 640 >		
+						<font size = 4 face='Arial' color=#224433>
+							<b>4. Pseudo-Springs</b>
+							<br>
+							Here's where the real fun begins. When two particles are 
+							connected by a spring, they both get forced in opposite 
+							directions with the same magnitude. Let's pretend that these dots 
+							don't want to participate in this silly rule, and they choose 
+							their own forces, which may be attractive or repulsive. 
+							Essentially the particles disagree on the spring length.
+							As you might expect, the results are a bit strange - it looks 
+							like a weird perpetual motion machine.
+						</font>	
+					</td>
+				</tr>
+			</table>
+			<br>
+			<table>
+				<tr>
+					<td width = 150  >		
+  						<a href="https://www.ventrella.com/Alife/Microworld/Index.html" target="_blank" >
+  						<img src = "images/experiment-5.png" width = 150></img></a>
+						<font size = 1 face='Arial' color=#224433>
+							(select image to see example)
+						</font>	
+					</td>
+					<td width = 10  ></td>
+					<td valign = top width = 640 >		
+						<font size = 4 face='Arial' color=#224433>
+							<b>5. Attractions and Repulsions</b>
+							<br>
+							Jumping back in time a bit; when I was a research assistant at the MIT Media Lab in the 
+							90's, I made a simple simulation where you can adjust the 
+							attractions and repulsions between two particles. It was designed
+							as a simple "microworld" - a digital plaything - a tool to 
+							think with. This example is a variation of that simulation. Like the pseudo-springs, 
+							the forces are asymmetrical, which makes the particles act more like 
+							organisms in a relationship than particles obeying Newton's laws.
+						</font>	
+					</td>
+				</tr>
+			</table>
+			<br>
+			<table>
+				<tr>
+					<td valign = top width = 550  >	
+						<font size = 5 face='Arial' color=#224433>
+							<b>5. Generalized force fields</b>
+						</font>	
+						
+						<!--
+						<font size = 4 face='Arial' color=#224433>
+							<b>View horizon</b>
+						</font>
+						-->	
+						<br>
+						<font size = 4 face='Arial' color=#224433>
+							Imagine that each particle is surrounded by a circle that 
+							represents its "view horizon", as shown here with a green and red 
+							particle. These particles cannot "see" anything outside of 
+							their circles. The green particle has a red circle to symbolize
+							its response to red particles (referring to the specific 
+							force field that comes into effect when a red 
+							particle enters the circle (comes into view)). Likewise, the 
+							red particle has a green circle. 
+							<!--
+							Since the physics in this 
+							world is an asymmetric, we need to specify all possible 
+							combinations of two particles in terms of color.
+							-->
+							<br>
+							<br>
+							If these two particles get close enough, one or both of them will enter 
+							into the circle of the other. That would
+							trigger a force response, as determined by their particular 
+							force parameters. 
+							<br>
+							<br>
+							Now imagine if the green particle had a larger circle 
+							than the red particle. If these particles were gradually moving 
+							towards each other, the green particle would see the red 
+							particle <em><b>sooner</b></em> than the red one would see the green one. 
+							This is an asymmetrical feature in the physics of this 
+							world. The other asymmetrical feature is the difference in 
+							force field profiles between the two particles. 
+						</font>	
+					</td>
+					<td width = 10  ></td>
+					<td width = 230  >		
+						<br>
+						<img src = "images/view-horizon.png" width = 200></img></a>	
+					</td>
+					<!--
+					<td valign = top width = 200  >		
+						<canvas id = "demoCanvas2" width = 200 data1 = 12 ></canvas>
+					</td>
+					-->
+				</tr>
+			</table>
+			<br>
+			
+			
+			
+			<table>
+				<tr>
+					<td valign = top width = 800  >		
+						<!--
+						<font size = 4 face='Arial' color=#224433>
+							<b>Generalized force fields</b>
+						</font>	
+						<br>
+						-->
+						<font size = 4 face='Arial' color=#224433>
+							Now I want to show you a correspondence between these circular 
+							view horizons and the force field diagram I showed earlier.
+							Below is a graph showing a typical force field used in 
+							the Clusters algorithm. In this graph I've flipped the potential axis 
+							upside-down so that attractive forces (green gradient) are above 
+							and repulsive forces (red gradient) are below. The magnitude 
+							of the force is visualized as the intensity of red or green. The 
+							corresponding view horizon circle is 
+							shown at right. The extent of the force field from left to 
+							right (ranging from 0 to r2) maps to the radius of 
+							the view horizon circle. The equilibrium distance is shown as <em>e</em>. 
+							<br>
+							<br>							
+							<img src = "images/force-field-1.png" width = 600></img></a>	
+							<br>							
+							<br>							
+							Instead of having curvy lines like the interatomic force graph,
+							these force-fields have sharp thresholds with linear ramps 
+							between them. It is a simplified variation on the natural force 
+							field, allowing for arbitrary parameters (where the proper 
+							laws of physics need not apply). There are 4 parameters: r1 and 
+							r2 ("radius 1" and "radius 2") which refer to the two distance thresholds, 
+							and f1 and f2, which refer to the two force thresholds. The 
+							value of f1 can never be positive, but the value of f2 could be 
+							either positive or negative (see the other force field examples below).
+							<br>
+							<br>		
+							Below is another force field where the force is constant along 
+							a stretch of distance between r1 and r2. In addition to the four values described above, there is 
+							another value that determines whether the force tapers down to 
+							zero at distance r2, or stays at a constant level until distance reaches r2. Within this distance 
+							range, the particle will be forced toward the 
+							other particle at a constant rate. Notice at the critical 
+							distance r2 there is a sharp cutoff. An aggregate of particles 
+							exhibiting sudden changes in velocity is a common behavior when 
+							force fields have this feature. The original version of Clusters 
+							uses this flat force. I latter added the parameter allowing for 
+							the optional tapering down to zero.
+							<br>
+							<br>		
+							<img src = "images/force-field-2.png" width = 600></img></a>	
+						</font>	
+						<br>
+					</td>
+				</tr>
+			</table>
+			<table>
+				<tr>
+					<td valign = top width = 800  >		
+						<font size = 4 face='Arial' color=#224433>
+							Given these five parameters, many kinds of force fields 
+							can be specified. Below are a few examples.
+							<br>
+							<br>
+							<img src = "images/crazy-force-fields.png" width = 800></img></a>	
+							<br>
+							<br>
+							You could think of the Clusters algorithm as a collection of generalized 
+							force fields. They determine inter-particle forces as a function
+							of distance. The profile of a force field could in fact be <em>anything</em> 
+							(like, any squiggly line that extends from left to right).
+							But the Clusters algorithm was designed to use relatively few 
+							parameters enabling a large space of possible force fields. 
+							<br>
+							<br>
+							A single force field on its own is not especially interesting, 
+							but the combination of several kinds of force-fields, acting 
+							in parallel, and the 
+							fact that there can be many thousands of particles, makes it quite 
+							interesting. And that brings us to the subject of species and ecosystems. 
+							
+						</font>	
+						<br>
+					</td>
+				</tr>
+			</table>
+			<br>
+			<table>
+				<tr>
+					<td valign = top width = 500  >			
+						<font size = 5 face='Arial' color=#224433>
+							<b>6. Particles, species, and ecosystems</b>
+						</font>	
+						<br>
+						<font size = 4 face='Arial' color=#224433>
+							There are three basic components to the Clusters universe: 
+							<br>
+							<br>
+							<b>1. Particle</b>: A particle is a point-mass (a tiny dot) 
+							with a position, a velocity, and a color. The size of the dot 
+							is a purely visual attribute and has no affect on physics. 
+							<br>
+							<br>
+							<b>2. Species</b>: The color of a particle represents its 
+							species. Each species interacts with other 
+							species in specific ways, as determined by its <em>genetics</em>. 
+							All particles of a particular species have the same gene values. Think of 
+							foxes and rabbits: foxes are genetically predisposed to chase 
+							rabbits, and rabbits are genetically predisposed to flee from foxes. 
+							Rabbits are also genetically predisposed to chase carrots (although 
+							carrots are not genetically predisposed to run away from rabbits). 
+							<br>
+							<br>
+							<b>3. Ecosystem</b>: An ecosystem is a collection of 
+							particles of one or more species.
+							In the natural world, species co-evolve in the context of other 
+							species. The genetic code of any one species is meaningful in 
+							terms of how it interacts with its environment, and that includes 
+							all the other species it encounters in its world. This world comprises the species'							
+							<a href="https://www.ventrella.com/PseudoSprings/" target="_blank" ><em>umwelt</em></a>.
+						</font>	
+					</td>
+					<td valign = top width = 20  >		
+					</td>	
+					<td valign = top width = 270  >	
+						<br>	
+						<br>	
+						<br>	
+						<br>	
+						<img src = "images/ontology.png" width = 210></img></a>				
+					</td>	
+				</tr>
+			</table>
+			<br>
+			<table>
+				<tr>
+					<td valign = top width = 800  >			
+						<font size = 4 face='Arial' color=#224433>
+							We can think of an ecosystem as a complex adaptive system in which 
+							all the genes of all the species have been designed (or evolved
+							using a genetic algorithm) to give rise to complex dynamics of 
+							one kind or another. An ecosystem can be bred to resemble a 
+							living system or a pseudo-fluid, or many possible strange and 
+							wonderful dynamical scenarios. 
+							The important concept here is that the genes of [all] the 
+							species in the ecosystem determine its overall character. 
+						</font>	
+					</td>
+				</tr>
+			</table>	
+			<br>
+			<table>
+				<tr>
+					<td valign = top width = 800  >			
+						<font size = 5 face='Arial' color=#224433>
+							<b>7. Delayed reactions and hysteresis</b>
+						</font>	
+						<br>
+						<font size = 4 face='Arial' color=#224433>
+							Now I want to explain one of the more subtle aspect of the 
+							Clusters universe: species can have a <em>lag</em> in their responses 
+							when interacting with other species. This is related to the 
+							concept of <a href="https://en.wikipedia.org/wiki/Hysteresis" target="_blank" >hysteresis</a>, 
+							which is a normal part of many biological processes, as well as
+							a necessary aspect of many engineered control systems. 
+						</font>	
+					</td>
+				</tr>
+			</table>	
+			<br>
+			<table>
+				<tr>
+					<td valign = top width = 500  >			
+						<font size = 4 face='Arial' color=#224433>
+							Consider the many communication and control
+							systems operating in your body all the time. 
+							It takes time for chemical and electrical signals to move from your liver to 
+							your bloodstream, or from your fingertips to your brain. 
+							It takes time for various internal sensors  
+							in your body to detect changes in the level of carbon dioxide, 
+							or serotonin, for instance. The delays vary from system to system, but the overall
+							dynamic is stable (if you are healthy). This create a kind of 
+							<em>dynamic equilibrium</em>: always shifting and adjusting 
+							in its parts but stable overall on the macro scale.
+							This is related to the subject of 
+							<a href="https://en.wikipedia.org/wiki/Morphogenesis" target="_blank" >morphogenesis</a>. 
+						</font>	
+					</td>
+					<td valign = top width = 20  >	
+					</td>	
+					<td valign = top width = 280  >	
+						<a href="https://www.researchgate.net/figure/Different-types-of-morphogenesis-in-sponges-resulting-in-larva-formation-A-Cell_fig8_235891173" target="_blank" ><img src = "images/morph.png" width = 200></img></a>
+					</td>	
+				</tr>
+			</table>	
+			<br>
+			<table>
+				<tr>
+					<td valign = top width = 800  >			
+						<font size = 4 face='Arial' color=#224433>
+							In the Clusters universe, these intertwined delay mechanisms 
+							can sometimes cause emergent 
+							rhythms and cycles having longer periods, giving rise to new 
+							levels of complexity. A simple engineered feedback system that is not 
+							properly calibrated can suffer from unwanted oscillations. 
+							But I love these unexpected emergent effects. They can sometimes
+							be an integral part of the way 
+							a big cluster blob moves around. In other words, these emergent,
+							highly-tangled oscillations can be exploited to create mobility, as well as 
+							many interesting space-time patterns.  
+							<br>
+							<br>
+							The Clusters algorithm achieves this extra level of complexity 
+							by simply having particles of different species delay their 
+							force responses by differing amounts (ranging from 0 to 5 time steps). 
+							That may not seem 
+							like a very long delay when you consider that the animation is 
+							typically running more than 30 time steps per second (ideally more than 60). 
+							However, that small delay (and the fact that <em>different</em> 
+							delays can be in effect among several species of particles) 
+							gives rise to dynamical patterns that are surprising and almost
+							impossible to predict from just considering the delay values 
+							on their own. This is the nature of Emergence.
+						</font>	
+					</td>	
+				</tr>
+			</table>
+			<br>
+			
+			
+			<table>
+				<tr>
+					<td valign = top width = 800  >		
+						<font size = 5 face='Arial' color=#224433>
+							<b>8. Variations</b> 
+						</font>	
+						<br>
+						<font size = 4 face='Arial' color=#224433>
+							Soon after I first presented Clusters on social media around 
+							2016, it got the 
+							attention of some generative artists and fans of animated 
+							artificial life. I want to introduce a few variations based 
+							on the algorithm and some examples of related simulations.
+						</font>	
+					</td>
+				</tr>
+			</table>
+			<br>
+			
+			<table>
+				<tr>
+					<td valign = top width = 590 >		
+						<font size = 4 face='Arial' color=#224433>
+							<b>Leap Motion Virtual Reality Particles</b>
+						</font>	
+						<br>
+						<font size = 4 face='Arial' color=#224433>
+							Leap cofounder Dave Holz invited me to collaborate with his development team 
+							in 2017 to implement the Clusters algorithm in virtual reality. 
+							We created a very cool demo where users can manipulate particles
+							with their hands, using Leap technology. 
+					 		<a href="https://www.youtube.com/watch?v=2GNmNjME2vg" target="_blank" >This video</a>	
+							shows off the capabilities of what can be done with finger-level 
+							manipulation of thousands of particles. 
+						</font>						
+					</td>
+					<td width = 10  ></td>
+					<td valign = top width = 200  >		
+					 <a href="https://www.youtube.com/watch?v=2GNmNjME2vg" target="_blank" ><img src = "images/leap.png" width = 200></img></a>	
+					</td>
+				</tr>
+			</table>
+			<br>			
+
+			<table>
+				<tr>
+					<td valign = top width = 590 >		
+						<font size = 4 face='Arial' color=#224433>
+							<b>Particle Life</b>
+						</font>	
+						<br>
+						<font size = 4 face='Arial' color=#224433>
+							A beautiful variation of this algorithm was created by Tom Mohr 
+							(<a href="https://tommohr.dev" target="_blank" >https://tommohr.dev</a>). He started working on it in 2018.
+							It's called <a href="https://particle-life.com/" target="_blank" ><em>Particle Life</em></a>.
+							<br>
+							<br>
+							Tom has simplified the rules for elegance and to make the 
+							concept easier to explain while still having an immense 
+							amount of emergent patterns. This 
+					 		<a href="https://www.youtube.com/watch?v=scvuli-zcRc" target="_blank" >video</a>								 
+							gives a nice explanation of the code behind particle Life, and it is a good 
+							compliment to my description here.
+						</font>	
+					</td>
+					<td width = 10  ></td>
+					<td valign = top width = 200  >		
+					 <a href="https://www.youtube.com/watch?v=scvuli-zcRc" target="_blank" ><img src = "images/P-Life.png" width = 200></img></a>	
+					</td>
+				</tr>
+			</table>
+			<br>			<table>
+				<tr>
+					<td valign = top width = 450 >		
+						<font size = 4 face='Arial' color=#224433>
+							<b>Atomic Clusters</b>
+						</font>	
+						<br>
+						<font size = 4 face='Arial' color=#224433>
+							A variation of the Clusters algorithm called 
+							<a href="https://ciphrd.com/2020/07/25/atomic-clusters/" target="_blank" >Atomic Clusters</img></a>	
+							was created by <b>ciphrd</b> in 2020. His simulation creates 
+							beautiful organic behaviors, and he even designed a lower-level 
+							model based on imaginary subatomic particles sharing electrons  
+							in various ways. This enabled him to generate directional patterns among clusters. 
+							It is described on 
+							<a href="https://ciphrd.com/2020/06/01/atomic-clusters-a-molecular-particle-based-simulation/" target="_blank" >this web page</img></a>								 
+							and includes technical details and access to the code. 
+						</font>	
+					</td>
+					<td width = 10  ></td>
+					<td width = 340  >		
+					 	<a href="https://ciphrd.com/2020/06/01/atomic-clusters-a-molecular-particle-based-simulation/" target="_blank" ><img src = "images/ciphrd.png" width = 330></img></a>	
+					 	<br>
+					</td>
+				</tr>
+			</table>
+			<br>
+			<table>
+				<tr>
+					<td valign = top width = 590 >		
+						<font size = 4 face='Arial' color=#224433>
+							<b>Circus of Life</b>
+						</font>	
+						<br>
+						<font size = 4 face='Arial' color=#224433>
+					 		<a href="https://cantonbecker.com/projects/" target="_blank" >Canton Becker</a>	
+							and I collaborated on an NTF project called 
+					 		<a href="https://www.fxhash.xyz/generative/slug/circus-of-life" target="_blank" >Circus of Life</a>.
+							
+							It can be viewed on a site called 
+					 		<a href="https://www.fxhash.xyz/" target="_blank" >fxhash</a>							
+							and it features generative art on the blockchain.
+							
+							
+						</font>		
+					</td>
+					<td width = 10  ></td>
+					<td valign = top width = 200  >		
+					 <a href="https://www.fxhash.xyz/generative/slug/circus-of-life" target="_blank" ><img src = "images/circus.png" width = 200></img></a>	
+					</td>
+				</tr>
+			</table>
+			<br>
+			<table>
+				<tr>
+					<td valign = top width = 590 >		
+						<font size = 4 face='Arial' color=#224433>
+							<b>Swarm Chemistry, Particle Lenia, and others</b>
+						</font>	
+						<br>
+						<font size = 4 face='Arial' color=#224433>
+							Several artificial life researchers have developed 
+							simulations involving "self-motivated" particles. Hiroki Sayama's 
+							<a href="https://direct.mit.edu/artl/article-abstract/15/1/105/2623/Swarm-Chemistry?redirectedFrom=fulltext" >swarm chemistry</a>
+							is an early example. A beautiful simulation called  							
+							<a href="https://znah.net/lenia/" >Particle Lenia</a> was 
+							created by Mordvintsev, Niklasson, and Randazzo. There are
+							<em>many</em> other examples; more than I can get into here. 
+							This kind of particle system has become popular, partly due to
+							the fact that graphics hardware has become so amazingly fast - 
+							it is possible to animate tens of thousands of particles, giving
+							rise to new complex spatiotemporal patterns that tickle the 
+							retina and baffle the mind. 							
+						</font>		
+					</td>
+					<td width = 10  ></td>
+					<td valign = top width = 200  >		
+					 <img src = "images/examples.png" width = 200></img>
+					</td>
+				</tr>
+			</table>
+			<br>
+			
+			
+			
+			
+			
+			
+			<table>
+				<tr>
+					<td valign = top width = 800  >			
+						<font size = 5 face='Arial' color=#224433>
+							<b>9. Final Remarks</b>
+						</font>	
+						<br>
+						<font size = 4 face='Arial' color=#224433>
+							I started this document simple and user-friendly, and concluded 
+							it with some gnarly concepts that can easily get quite sophisticated,
+							more than I am qualified to dive into. At the time of this writing 
+							(December, 2024) I have done some preliminary experiments in 
+							using a genetic algorithm to evolve ecosystems. I am 
+							considering doing an artificial life research project to see 
+							if I can set up a fitness function that causes complex clusters 
+							to emerge and exhibit life-like behaviors. I can't give 
+							any more details than that at this stage (partly because they 
+							are not fully baked).
+							<br>
+							<br>
+							Meanwhile, I hope you enjoy exploring 
+							<a href="http://www.ventrella.com/Clusters" target="_blank" >Clusters</a>.
+							I would welcome comments or suggestions from anyone who has a vested interest 
+							in this subject. Please contact me at (jeffrey@ventrella.com) 							  
+							<br>
+						</font>	
+					</td>	
+				</tr>
+			</table>
+
+			<br>
+			<br>
+			<table>
+				<tr>
+					<td valign = top width = 800  >		
+						<hr>
+                        <a href = index.html   ><big><big>Play with Clusters</big></big></a>
+						<hr>
+						<br>
+						<a href="https://ventrella.com/Clusters/" target="_blank" >
+							<font size = 3 face='Arial' color=#224433>Ventrella.com</font></a>
+					</td>
+				</tr>
+			</table>
+			<br>
+			<br>
+			<br>
+			<br>
+        </center>		
+		
+			<div id = "tweakPanel">			
+				<input 
+					id              = "numParticlesSlider"    
+					name            = "numParticlesSlider"      
+				>
+				<input 
+					id 		= "numParticlesInput"
+				>
+				<input 
+					id              = "numSpeciesSlider"    
+					name            = "numSpeciesSlider"      
+				>			
+				<input 
+					id 		= "numSpeciesInput"
+				>
+				<input 
+					id              = "motionBlurSlider"    
+					name            = "motionBlurSlider"      
+				>
+				<input 
+					id 		= "motionBlurInput"
+				>
+			</div>
+		</div>
+		
+		
+		
+	</body>
+</html>

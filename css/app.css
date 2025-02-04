@@ -1,0 +1,311 @@
+body 
+{
+/*    background-color: #888680;*/
+}
+
+/* -------------------------------------------- */
+/* classes                                      */
+/* -------------------------------------------- */
+.subPanel
+{ 
+    background-color:       #dddddd;
+}
+
+.buttonClass
+{
+    position:   absolute;
+    width:      120px;
+    height:     25px;
+    border-radius: 4px;
+    background-color: #bbbbbb;
+}
+
+.sliderClass
+{ 
+    position:               absolute;
+    width:					140px; 
+    height:					20px; 
+}
+
+.radioButtonClass
+{ 
+    position:               absolute;
+    width:                  20px; 
+    height:                 20px; 
+    border-radius:          50%; 
+}
+
+.inputClass
+{ 
+    position:               absolute;
+    width:					60px; 
+    height:					14px; 
+}
+
+.labelClass
+{ 
+    position:               absolute;
+    height:					50px; 
+    color:                  #000000; 
+    font-family:            "Arial";
+    font-size:              16px;
+}
+
+.dotClass
+{
+    position: absolute; 
+	height: 10px;
+	width: 10px;
+	background-color: #ff0000;
+	border-radius: 50%;
+	display: inline-block;
+}
+
+
+.radio-group 
+{
+  position: absolute;
+  left: 10px;
+  top: 820px;
+}
+
+#mainPanel
+{
+    position:				absolute; 
+    top:					0px;
+    right:					0px;
+    width:					390px; 
+
+    /*
+    height:					800px;
+    */
+    
+    height:					100%;
+    
+    background-color:       clear; /*#999591;*/
+	/* border-left: 2px solid #666659;*/
+    color:                  #000000; 
+    font-family:            "Arial";
+    font-size:              12px;
+}
+
+#mainTitle
+{
+    position:			absolute; 
+    left:				10px;
+    top:				10px;
+    width:				300px; 
+    background-color: 	clear;
+    color:		 		#000000; 
+    font-family: 		"Arial black";
+    font-size:  		18px;
+}
+
+#tweakPanel
+{
+    position:			absolute; 
+    left:				10px;
+    top:				10px;
+    width:				270px; 
+    height:				200px; 
+
+}
+
+#subTitle
+{
+    position:			absolute; 
+    left:				110px;
+    top:				15px;
+    width:				260px; 
+    background-color: 	clear;
+    color:		 		#000000; 
+    font-family: 		"Arial";
+    font-size:  		14px;
+}
+
+#EcosystemLabel
+{
+    position:			absolute; 
+    left:				10px;
+    top:				10px;
+    width:				370px; 
+    background-color: 	clear;
+    color:		 		#333333; 
+    font-family: 		"Arial";
+    font-size:  		16px;
+}
+
+#TweakLabel
+{
+    position:			absolute; 
+    left:				10px;
+    top:				10px;
+    width:				370px; 
+    background-color: 	clear;
+    color:		 		#333333; 
+    font-family: 		"Arial";
+    font-size:  		16px;
+}
+
+#SaveLabel
+{
+    position:			absolute; 
+    left:				10px;
+    top:				730px;
+    width:				200px; 
+    background-color: 	clear;
+    color:		 		#333333; 
+    font-family: 		"Arial";
+    font-size:  		16px;
+}
+
+#speciesLabel
+{
+    position:			absolute; 
+    left:				10px;
+    top:				500px;
+    width:				200px; 
+    background-color: 	clear;
+    color:		 		#333333; 
+    font-family: 		"Arial";
+    font-size:  		14px;
+}
+
+#bangNote
+{
+    position:			absolute; 
+    left:				125px;
+    top:				125px;
+    width:				300px; 
+    background-color: 	clear;
+    color:		 		#333333; 
+    font-family: 		"Arial";
+    font-size:  		14px;
+}
+
+#controlPanel
+{
+    position:				absolute; 
+    top:					30px;
+    left:					10px;
+    width:					360px; 
+    height:					900px;
+    
+    /*
+	background-image: 		url( "../images/background.png" );
+	background-size: 		cover;
+	background-repeat: 		no-repeat;
+	*/
+	
+    background-color:       #dddcda;
+    color:                  #005500; 
+    font-family:            "Arial";
+    font-size:              12px;
+}
+
+#tweakPanel
+{
+    position:	absolute; 
+    left:		0px;
+    top:		200px;
+}
+
+
+#ecosystemPanel
+{
+    position:	absolute; 
+    left:		0px;
+    top:		45px;
+}
+
+#buttonPause	{ left:  10px; top: 55px; }
+
+#buttonBang		{ left:  10px; top: 55px; }
+#buttonPollack	{ left: 130px; top: 55px; }
+#buttonAcrobats	{ left: 250px; top: 55px; }
+
+#buttonField 	{ left:  10px; top: 80px; }
+#buttonGems 	{ left: 130px; top: 80px; }
+#buttonMitosis	{ left: 250px; top: 80px; }
+
+#buttonAlliances{ left:  10px; top: 105px; }
+#buttonPlanets 	{ left: 130px; top: 105px; }
+#buttonMenace 	{ left: 250px; top: 105px; }
+
+#buttonPurple	{ left:  10px; top: 130px; }
+#buttonSimplify	{ left: 130px; top: 130px; }
+#buttonThrob	{ left: 250px; top: 130px; }
+
+#buttonColors 	{ left:  10px; top: 190px; }
+#buttonFreeze	{ left: 130px; top: 190px; }
+#buttonZap		{ left: 250px; top: 190px; }
+
+#buttonGA 		{ left:  20px; top: 510px; }
+#buttonSave		{ left: 140px; top: 510px; }
+
+#buttonGAGood	{ left:  20px; top: 560px; }
+#buttonGANext	{ left: 140px; top: 560px; }
+
+#radioLabel 
+{
+	position: absolute; 
+	left:  20px; 
+	top: 360px; 
+	top: 360px; 
+}
+
+
+/*
+#radio0 { left:  20px; top: 380px; border: 2px solid black; }
+#radio1 { left:  60px; top: 380px; border: 2px solid blue; } 
+#radio2 { left: 100px; top: 380px; border: 2px solid red; } 
+#radio3 { left: 140px; top: 380px; border: 2px solid green; } 
+#radio4 { left: 180px; top: 380px; border: 2px solid yellow; } 
+
+
+#num0Label 		{ left:  10px; top: 10px; font-size: 16px; }
+#dot1			{ left:  10px; top: 10px; width: 16px; height: 16px; }
+#button30 		{ left:  30px; top: 0px; width: 40px; height: 25px; }
+#button31 		{ left:  70px; top: 0px; width: 40px; height: 25px; }
+*/
+
+#numParticlesSliderLabel{ left:  10px; top: 60px; font-size: 10px; }
+#numParticlesSlider		{ left:  10px; top: 70px; }
+#numParticlesInput 		{ left: 160px; top: 71px; }
+
+#numSpeciesSliderLabel	{ left:  10px; top: 100px; font-size: 10px; }
+#numSpeciesSlider		{ left:  10px; top: 110px; }
+#numSpeciesInput 		{ left: 160px; top: 111px; }
+
+#motionBlurSliderLabel	{ left:  10px; top: 140px; font-size: 10px; }
+#motionBlurSlider		{ left:  10px; top: 150px; }
+#motionBlurInput 		{ left: 160px; top: 151px; }
+
+#statusLabel
+{ 
+    position:   absolute;
+	left: 10px; 
+	top: 430px; 
+    width:	370px; 
+	font-size: 14px; 
+}
+
+
+/*
+#slider2Label 	{ left: 195px; top: 25px; font-size: 10px; }
+#slider2		{ left: 195px; top: 30px; }
+*/
+
+/* -------------------------------------------- */
+/*  edit canvas                                 */
+/* -------------------------------------------- */
+/*
+#editCanvas
+{
+    position: absolute; 
+    left: 10px;
+    top: 500px;
+    width: 200px; 
+    height: 200px;
+}
+*/
