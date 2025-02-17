@@ -19,7 +19,8 @@ const ECO_POLLACK	 	=  11;
 const ECO_PURPLE	 	=  12;
 const ECO_SIMPLIFY	 	=  13;
 const ECO_FLUID		 	=  14;
-const NUM_ECOS			=  15;
+const ECO_DREAM		 	=  15;
+const NUM_ECOS			=  16;
 
 //------------------------------	
 // init modes
@@ -208,31 +209,11 @@ function Ecosystem()
 			curvedMotionBlur = curvedMotionBlur.toFixed(2);
 			this.blur = curvedMotionBlur;
 
-
-/*
-//temp...
-this.diskSize 		= 300.0;
-this.numParticles 	= 600;
-this.numSpecies 	= 4;
-this.blur 			= 0.0;
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-this.randomizeAllSpecies();
-//this.reduceToSpeciesPairs();
+			this.randomizeAllSpecies();
+			//this.reduceToSpeciesPairs();
 			
-this.initMode = INIT_MODE_DISK;	
-//this.initMode = INIT_MODE_BOTTOM;	
+			this.initMode = INIT_MODE_DISK;	
+			//this.initMode = INIT_MODE_BOTTOM;	
 		}
         //-----------------------------------------
         // Big Bang (customized for a small canvas)
@@ -365,18 +346,39 @@ this.initMode = INIT_MODE_DISK;
         //-----------------------------------------
         else if ( e === ECO_FLUID )
         {
-			this.numSpecies = 1;
-	    	this.numParticles = 1500;
-			this.initMode 	= INIT_MODE_DISK;		
+			this.numSpecies = 2;
+	    	this.numParticles = 1000;
+			this.initMode 	= INIT_MODE_FULL;		
 			this.diskSize 	= 50.0;
 
 			this.species[0].setColor( 200, 200, 200, 0.5, 1.0 ); 
+			this.species[0].averageForces = false;
 			this.species[0].steps = 0;
-			this.species[0].friction = 0.1;
+			this.species[0].friction = 0.02;
 			this.species[0].collisionForce	[0] = 0.2;   
 			this.species[0].collisionRadius	[0] = 20.0;   
-			this.species[0].socialForce 	[0] = 0.01;
+			this.species[0].socialForce 	[0] = 0.06;
 			this.species[0].socialRadius	[0] = 30.0;
+			
+			this.species[0].collisionForce	[1] = 0.2;   
+			this.species[0].collisionRadius	[1] = 20.0;   
+			this.species[0].socialForce 	[1] = 0.2;
+			this.species[0].socialRadius	[1] = 30.0;
+
+
+			this.species[1].setColor( 100, 150, 200, 0.5, 1.0 ); 
+			this.species[1].averageForces = false;
+			this.species[1].steps = 0;
+			this.species[1].friction = 0.01;
+			this.species[1].collisionForce	[1] = 0.2;   
+			this.species[1].collisionRadius	[1] = 20.0;   
+			this.species[1].socialForce 	[1] = 0.2;
+			this.species[1].socialRadius	[1] = 30.0;
+
+			this.species[1].collisionForce	[0] = 0.2;   
+			this.species[1].collisionRadius	[0] = 20.0;   
+			this.species[1].socialForce 	[0] = -0.4;
+			this.species[1].socialRadius	[0] = 30.0;
 		}
 		//-----------------------------------------
         // Mitosis
@@ -430,11 +432,7 @@ this.initMode = INIT_MODE_DISK;
         else if ( e === ECO_RED_MENACE )
         {
 			this.numSpecies = 12;
-	    	this.numParticles = 1000;
-	    	
-	    	
-this.numParticles = 2000;
-	    	
+	    	this.numParticles = 1500;
 	    	
             for (let t=0; t<this.numSpecies; t++)
             {
@@ -628,6 +626,1100 @@ this.numParticles = 2000;
 			}
 
 			this.randomizeSpeciesColors();			
+        
+        	//step test...
+        	/*
+	    	this.numParticles = 7 + 80;
+			this.numSpecies = 3;
+			this.initMode = INIT_MODE_DEMO;		
+			this.diskSize = 200.0;
+			
+			this.species[0].setColor( 255,  50,   50, 1.0 ); 
+			this.species[1].setColor( 255,  255,   0, 1.0 ); 
+			this.species[2].setColor(  50,  100, 200, 1.0 ); 
+
+            this.species[0].steps = 0;              
+            this.species[1].steps = 0; 
+
+            this.species[1].socialRamp		[0] = false;
+            this.species[1].socialForce 	[0] = 0.1;    
+            this.species[1].socialRadius	[0] = 120;     
+			this.species[1].collisionForce	[0] = 1; 
+			this.species[1].collisionRadius	[0] = 10;
+			
+            this.species[1].socialRamp		[1] = false;
+            this.species[1].socialForce 	[1] = -0.1;      
+            this.species[1].socialRadius	[1] = 9.0;     
+			this.species[1].collisionForce	[1] = 10.0;  
+			this.species[1].collisionRadius	[1] = 9.0;  
+
+
+
+            this.species[2].steps = 5; 
+			
+            this.species[2].socialRamp		[0] = false;
+            this.species[2].socialForce 	[0] = 0.1;      
+            this.species[2].socialRadius	[0] = 180.0;     
+			this.species[2].collisionForce	[0] = 1;  
+			this.species[2].collisionRadius	[0] = 10.0;  
+
+            this.species[2].socialRamp		[1] = false;
+            this.species[2].socialForce 	[1] = -3;      
+            this.species[2].socialRadius	[1] = 50.0;     
+			this.species[2].collisionForce	[1] = 1;  
+			this.species[2].collisionRadius	[1] = 10.0;  
+
+            this.species[2].socialRamp		[2] = false;
+            this.species[2].socialForce 	[2] = -0.4;      
+            this.species[2].socialRadius	[2] = 10.0;     
+			this.species[2].collisionForce	[2] = 0.9;  
+			this.species[2].collisionRadius	[2] = 10.0;  
+			*/
+		}
+		
+		//-----------------------------------------
+        // Demo
+        //-----------------------------------------
+        else if ( e === ECO_DREAM    )
+        {
+this.numParticles = 1500;                                                      
+this.numSpecies = 8;                                                           
+this.initMode = 2;                                                             
+this.diskSize = 50;                                                            
+this.blur = 0.8;                                                              
+this.scale = 1;       
+
+
+
+
+for (let s=0; s<MAX_SPECIES; s++)
+{
+	this.species[s].halo = true;
+}
+
+                                                         
+// species 0:                                                                  
+this.species[0].steps = 0;                                                     
+this.species[0].setColor( 153, 81, 122, 0.6655960476497422 );                  
+// force field for species 0:                                                  
+this.species[0].collisionForce[0] = 0.728907506586925;                         
+this.species[0].collisionRadius[0] = 16.154670027018707;                       
+this.species[0].socialForce[0] = 1.4944551013729068;                           
+this.species[0].socialRadius[0] = 55.03449942208762;                           
+// force field for species 1:                                                  
+this.species[0].collisionForce[1] = 0.4716552017141782;                        
+this.species[0].collisionRadius[1] = 15.311921995353684;                       
+this.species[0].socialForce[1] = -2.3785344140961104;                          
+this.species[0].socialRadius[1] = 58.97542576499758;                           
+// force field for species 2:                                                  
+this.species[0].collisionForce[2] = 1.1066592875749053;                        
+this.species[0].collisionRadius[2] = 0.5837518284813314;                       
+this.species[0].socialForce[2] = 4.3110656134987355;                           
+this.species[0].socialRadius[2] = 66.59916026528934;                           
+// force field for species 3:                                                  
+this.species[0].collisionForce[3] = 1.7086631005313548;                        
+this.species[0].collisionRadius[3] = 13.46845464254734;                        
+this.species[0].socialForce[3] = -1.9006677049672094;                          
+this.species[0].socialRadius[3] = 108.11060077898519;                          
+// force field for species 4:                                                  
+this.species[0].collisionForce[4] = 0.34068245068814895;                       
+this.species[0].collisionRadius[4] = 4.794558602992689;                        
+this.species[0].socialForce[4] = -2.231029995423727;                           
+this.species[0].socialRadius[4] = 95.32865507854417;                           
+// force field for species 5:                                                  
+this.species[0].collisionForce[5] = 1.263567122532531;                         
+this.species[0].collisionRadius[5] = 15.40749020271872;                        
+this.species[0].socialForce[5] = -0.07563934385222026;                         
+this.species[0].socialRadius[5] = 109.69778545538429;                          
+// force field for species 6:                                                  
+this.species[0].collisionForce[6] = 1.2443174739104192;                        
+this.species[0].collisionRadius[6] = 12.0402509932239;                         
+this.species[0].socialForce[6] = -2.8389416545400747;                          
+this.species[0].socialRadius[6] = 39.306605870759505;                          
+// force field for species 7:                                                  
+this.species[0].collisionForce[7] = 1.5653272179216042;                        
+this.species[0].collisionRadius[7] = 10.073567604952666;                       
+this.species[0].socialForce[7] = 0.005340251337501378;                         
+this.species[0].socialRadius[7] = 60.02947554858165;                           
+// species 1:                                                                  
+this.species[1].steps = 0;                                                     
+this.species[1].setColor( 182, 186, 140, 0.4490693280347043 );                 
+// force field for species 0:                                                  
+this.species[1].collisionForce[0] = 0.449462094507187;                         
+this.species[1].collisionRadius[0] = 8.250979798160493;                        
+this.species[1].socialForce[0] = 1.527653264954841;                            
+this.species[1].socialRadius[0] = 106.33909218032676;                          
+// force field for species 1:                                                  
+this.species[1].collisionForce[1] = 0.05765274379779095;                       
+this.species[1].collisionRadius[1] = 13.239493670345624;                       
+this.species[1].socialForce[1] = 3.036073235206354;                            
+this.species[1].socialRadius[1] = 39.404577700984596;                          
+// force field for species 2:                                                  
+this.species[1].collisionForce[2] = 0.47863366691274356;                       
+this.species[1].collisionRadius[2] = 11.680226334201658;                       
+this.species[1].socialForce[2] = -1.8786773570790527;                          
+this.species[1].socialRadius[2] = 84.26060025961357;                           
+// force field for species 3:                                                  
+this.species[1].collisionForce[3] = 1.6621865627740655;                        
+this.species[1].collisionRadius[3] = 11.698543629306133;                       
+this.species[1].socialForce[3] = -4.9471642277518715;                          
+this.species[1].socialRadius[3] = 70.74686745838662;                           
+// force field for species 4:                                                  
+this.species[1].collisionForce[4] = 0.6299192018083664;                        
+this.species[1].collisionRadius[4] = 16.369303271093543;                       
+this.species[1].socialForce[4] = -3.788062572679344;                           
+this.species[1].socialRadius[4] = 30.68497841008704;                           
+// force field for species 5:                                                  
+this.species[1].collisionForce[5] = 0.38437958824935525;                       
+this.species[1].collisionRadius[5] = 8.6718040347126;                          
+this.species[1].socialForce[5] = -1.0407804886833172;                          
+this.species[1].socialRadius[5] = 82.36119570318309;                           
+// force field for species 6:                                                  
+this.species[1].collisionForce[6] = 0.851422832601799;                         
+this.species[1].collisionRadius[6] = 19.823878744884404;                       
+this.species[1].socialForce[6] = -1.3332725677162491;                          
+this.species[1].socialRadius[6] = 42.16206518197782;                           
+// force field for species 7:                                                  
+this.species[1].collisionForce[7] = 0.8408256950517328;                        
+this.species[1].collisionRadius[7] = 19.119728527647627;                       
+this.species[1].socialForce[7] = 3.92485369018004;                             
+this.species[1].socialRadius[7] = 79.2363389989351;                            
+// species 2:                                                                  
+this.species[2].steps = 0;                                                     
+this.species[2].setColor( 82, 83, 111, 0.9521412929024726 );                   
+// force field for species 0:                                                  
+this.species[2].collisionForce[0] = 1.0928248475113633;                        
+this.species[2].collisionRadius[0] = 2.429666972930893;                        
+this.species[2].socialForce[0] = -3.035377003349775;                           
+this.species[2].socialRadius[0] = 29.20923549016771;                           
+// force field for species 1:                                                  
+this.species[2].collisionForce[1] = 0.24618941949490214;                       
+this.species[2].collisionRadius[1] = 7.624069415602827;                        
+this.species[2].socialForce[1] = -0.22490401564766138;                         
+this.species[2].socialRadius[1] = 65.61316761668706;                           
+// force field for species 2:                                                  
+this.species[2].collisionForce[2] = 0.456907469855258;                         
+this.species[2].collisionRadius[2] = 6.503770163188374;                        
+this.species[2].socialForce[2] = -1.9622357805321533;                          
+this.species[2].socialRadius[2] = 95.11492578673472;                           
+// force field for species 3:                                                  
+this.species[2].collisionForce[3] = 1.0259082710666032;                        
+this.species[2].collisionRadius[3] = 5.503951280251311;                        
+this.species[2].socialForce[3] = 1.541444141249774;                            
+this.species[2].socialRadius[3] = 88.14746503371612;                           
+// force field for species 4:                                                  
+this.species[2].collisionForce[4] = 0.7509728814263528;                        
+this.species[2].collisionRadius[4] = 15.726307702770546;                       
+this.species[2].socialForce[4] = 4.659067583088252;                            
+this.species[2].socialRadius[4] = 74.36881014906459;                           
+// force field for species 5:                                                  
+this.species[2].collisionForce[5] = 0.927804427059993;                         
+this.species[2].collisionRadius[5] = 17.305582709668407;                       
+this.species[2].socialForce[5] = -4.20163820202013;                            
+this.species[2].socialRadius[5] = 86.2945520087905;                            
+// force field for species 6:                                                  
+this.species[2].collisionForce[6] = 1.08224362992423;                          
+this.species[2].collisionRadius[6] = 18.923032852010877;                       
+this.species[2].socialForce[6] = 1.813849997913369;                            
+this.species[2].socialRadius[6] = 56.13929869436951;                           
+// force field for species 7:                                                  
+this.species[2].collisionForce[7] = 1.1386875059661492;                        
+this.species[2].collisionRadius[7] = 17.03361812628995;                        
+this.species[2].socialForce[7] = 3.3781297257658114;                           
+this.species[2].socialRadius[7] = 39.29327015441777;                           
+// species 3:                                                                  
+this.species[3].steps = 1;                                                     
+this.species[3].setColor( 141, 114, 56, 0.8957871988547057 );                  
+// force field for species 0:                                                  
+this.species[3].collisionForce[0] = 0.503758449086134;                         
+this.species[3].collisionRadius[0] = 14.646818944259943;                       
+this.species[3].socialForce[0] = 3.1257090735798787;                           
+this.species[3].socialRadius[0] = 35.42463423888109;                           
+// force field for species 1:                                                  
+this.species[3].collisionForce[1] = 0.7126390701273952;                        
+this.species[3].collisionRadius[1] = 6.667054048099881;                        
+this.species[3].socialForce[1] = 3.8446974707381596;                           
+this.species[3].socialRadius[1] = 96.01082572335636;                           
+// force field for species 2:                                                  
+this.species[3].collisionForce[2] = 0.6876258746132615;                        
+this.species[3].collisionRadius[2] = 14.837185937422548;                       
+this.species[3].socialForce[2] = 4.695564629742643;                            
+this.species[3].socialRadius[2] = 67.59801521258643;                           
+// force field for species 3:                                                  
+this.species[3].collisionForce[3] = 1.862782736398233;                         
+this.species[3].collisionRadius[3] = 14.059421433612316;                       
+this.species[3].socialForce[3] = 3.4979171620334313;                           
+this.species[3].socialRadius[3] = 54.364316409897846;                          
+// force field for species 4:                                                  
+this.species[3].collisionForce[4] = 1.2969017062179253;                        
+this.species[3].collisionRadius[4] = 14.522744268885576;                       
+this.species[3].socialForce[4] = -4.182251528473976;                           
+this.species[3].socialRadius[4] = 94.1067421649804;                            
+// force field for species 5:                                                  
+this.species[3].collisionForce[5] = 0.8614277876656462;                        
+this.species[3].collisionRadius[5] = 14.028505018609295;                       
+this.species[3].socialForce[5] = -2.001632482761171;                           
+this.species[3].socialRadius[5] = 96.65953869681681;                           
+// force field for species 6:                                                  
+this.species[3].collisionForce[6] = 1.7340342062536163;                        
+this.species[3].collisionRadius[6] = 9.371533280638554;                        
+this.species[3].socialForce[6] = 4.345396744035831;                            
+this.species[3].socialRadius[6] = 48.99179939022119;                           
+// force field for species 7:                                                  
+this.species[3].collisionForce[7] = 0.1909894518003017;                        
+this.species[3].collisionRadius[7] = 6.876569148396703;                        
+this.species[3].socialForce[7] = -4.450189592453821;                           
+this.species[3].socialRadius[7] = 90.57647878472079;                           
+// species 4:                                                                  
+this.species[4].steps = 1;                                                     
+this.species[4].setColor( 76, 237, 94, 0.5055951941895145 );                   
+// force field for species 0:                                                  
+this.species[4].collisionForce[0] = 0.8188126577716657;                        
+this.species[4].collisionRadius[0] = 2.376034703051002;                        
+this.species[4].socialForce[0] = -4.986688245879984;                           
+this.species[4].socialRadius[0] = 58.88282743625935;                           
+// force field for species 1:                                                  
+this.species[4].collisionForce[1] = 1.0450683088426116;                        
+this.species[4].collisionRadius[1] = 18.377758346905406;                       
+this.species[4].socialForce[1] = -4.036344098169451;                           
+this.species[4].socialRadius[1] = 88.98009180473316;                           
+// force field for species 2:                                                  
+this.species[4].collisionForce[2] = 0.33534366014147277;                       
+this.species[4].collisionRadius[2] = 4.398028252319428;                        
+this.species[4].socialForce[2] = 3.511449381523093;                            
+this.species[4].socialRadius[2] = 41.638369553895124;                          
+// force field for species 3:                                                  
+this.species[4].collisionForce[3] = 1.336135205583391;                         
+this.species[4].collisionRadius[3] = 14.76179835867369;                        
+this.species[4].socialForce[3] = -1.6510487692032227;                          
+this.species[4].socialRadius[3] = 68.40041696796833;                           
+// force field for species 4:                                                  
+this.species[4].collisionForce[4] = 0.799564859492494;                         
+this.species[4].collisionRadius[4] = 11.824813152951933;                       
+this.species[4].socialForce[4] = -2.2146634162672783;                          
+this.species[4].socialRadius[4] = 67.35263409798526;                           
+// force field for species 5:                                                  
+this.species[4].collisionForce[5] = 1.5028413228958497;                        
+this.species[4].collisionRadius[5] = 18.73036952731205;                        
+this.species[4].socialForce[5] = -4.286927007022334;                           
+this.species[4].socialRadius[5] = 105.80359178029931;                          
+// force field for species 6:                                                  
+this.species[4].collisionForce[6] = 0.3974370835076626;                        
+this.species[4].collisionRadius[6] = 0.17336167587354234;                      
+this.species[4].socialForce[6] = 3.818192692196826;                            
+this.species[4].socialRadius[6] = 3.057900228507928;                           
+// force field for species 7:                                                  
+this.species[4].collisionForce[7] = 0.7156488870698285;                        
+this.species[4].collisionRadius[7] = 11.784648289727551;                       
+this.species[4].socialForce[7] = 0.5321361554748529;                           
+this.species[4].socialRadius[7] = 72.63981535053456;                           
+// species 5:                                                                  
+this.species[5].steps = 1;                                                     
+this.species[5].setColor( 162, 58, 253, 0.3011586504408384 );                  
+// force field for species 0:                                                  
+this.species[5].collisionForce[0] = 0.3716306295052023;                        
+this.species[5].collisionRadius[0] = 1.3585710513472393;                       
+this.species[5].socialForce[0] = -2.04675315203224;                            
+this.species[5].socialRadius[0] = 25.427255921899267;                          
+// force field for species 1:                                                  
+this.species[5].collisionForce[1] = 0.5727115621279173;                        
+this.species[5].collisionRadius[1] = 16.835211065986805;                       
+this.species[5].socialForce[1] = 4.149189593236759;                            
+this.species[5].socialRadius[1] = 98.7168448947497;                            
+// force field for species 2:                                                  
+this.species[5].collisionForce[2] = 0.5260608242860361;                        
+this.species[5].collisionRadius[2] = 12.12225585860969;                        
+this.species[5].socialForce[2] = -0.997092879569732;                           
+this.species[5].socialRadius[2] = 54.601092231944264;                          
+// force field for species 3:                                                  
+this.species[5].collisionForce[3] = 0.9463353512573289;                        
+this.species[5].collisionRadius[3] = 17.36197611864974;                        
+this.species[5].socialForce[3] = 0.4420056150282816;                           
+this.species[5].socialRadius[3] = 31.903726506876886;                          
+// force field for species 4:                                                  
+this.species[5].collisionForce[4] = 1.414072668275056;                         
+this.species[5].collisionRadius[4] = 18.88287708715248;                        
+this.species[5].socialForce[4] = 3.545273380332606;                            
+this.species[5].socialRadius[4] = 103.50128636882103;                          
+// force field for species 5:                                                  
+this.species[5].collisionForce[5] = 1.2390971701730968;                        
+this.species[5].collisionRadius[5] = 8.04201661870114;                         
+this.species[5].socialForce[5] = 4.90309695103765;                             
+this.species[5].socialRadius[5] = 41.561242978566035;                          
+// force field for species 6:                                                  
+this.species[5].collisionForce[6] = 1.4497729845972946;                        
+this.species[5].collisionRadius[6] = 9.229128820489446;                        
+this.species[5].socialForce[6] = -3.97936161066325;                            
+this.species[5].socialRadius[6] = 79.22107903263041;                           
+// force field for species 7:                                                  
+this.species[5].collisionForce[7] = 1.7007068500960971;                        
+this.species[5].collisionRadius[7] = 6.969465865612506;                        
+this.species[5].socialForce[7] = -4.151883119735372;                           
+this.species[5].socialRadius[7] = 91.45503291533416;                           
+// species 6:                                                                  
+this.species[6].steps = 0;                                                     
+this.species[6].setColor( 218, 203, 241, 0.7240253708655338 );                 
+// force field for species 0:                                                  
+this.species[6].collisionForce[0] = 1.893394984618125;                         
+this.species[6].collisionRadius[0] = 14.837957529353744;                       
+this.species[6].socialForce[0] = 1.4396095207215094;                           
+this.species[6].socialRadius[0] = 58.21017101966071;                           
+// force field for species 1:                                                  
+this.species[6].collisionForce[1] = 1.895563360712863;                         
+this.species[6].collisionRadius[1] = 0.47535843588920157;                      
+this.species[6].socialForce[1] = -4.244514480413417;                           
+this.species[6].socialRadius[1] = 14.205304400841486;                          
+// force field for species 2:                                                  
+this.species[6].collisionForce[2] = 1.2810873053982161;                        
+this.species[6].collisionRadius[2] = 6.995965456122257;                        
+this.species[6].socialForce[2] = 3.2007637758672427;                           
+this.species[6].socialRadius[2] = 61.42279111512092;                           
+// force field for species 3:                                                  
+this.species[6].collisionForce[3] = 0.8654883082862572;                        
+this.species[6].collisionRadius[3] = 9.305126025354477;                        
+this.species[6].socialForce[3] = -4.132022793479515;                           
+this.species[6].socialRadius[3] = 17.631137206576227;                          
+// force field for species 4:                                                  
+this.species[6].collisionForce[4] = 1.3078519817101415;                        
+this.species[6].collisionRadius[4] = 8.065886734977079;                        
+this.species[6].socialForce[4] = -4.351741874810006;                           
+this.species[6].socialRadius[4] = 63.814085820391384;                          
+// force field for species 5:                                                  
+this.species[6].collisionForce[5] = 1.0031806067471218;                        
+this.species[6].collisionRadius[5] = 17.90289654265613;                        
+this.species[6].socialForce[5] = 1.961709607254143;                            
+this.species[6].socialRadius[5] = 105.90874816348173;                          
+// force field for species 6:                                                  
+this.species[6].collisionForce[6] = 1.8776798096697287;                        
+this.species[6].collisionRadius[6] = 19.01349221227345;                        
+this.species[6].socialForce[6] = 4.505557360934313;                            
+this.species[6].socialRadius[6] = 33.867366281098064;                          
+// force field for species 7:                                                  
+this.species[6].collisionForce[7] = 1.683855831754386;                         
+this.species[6].collisionRadius[7] = 4.973380232414515;                        
+this.species[6].socialForce[7] = 1.5770051369308096;                           
+this.species[6].socialRadius[7] = 9.992641548017378;                           
+// species 7:                                                                  
+this.species[7].steps = 0;                                                     
+this.species[7].setColor( 58, 71, 232, 0.5645769103017378 );                   
+// force field for species 0:                                                  
+this.species[7].collisionForce[0] = 0.556062425473697;                         
+this.species[7].collisionRadius[0] = 14.844237688159897;                       
+this.species[7].socialForce[0] = 1.1237431746913664;                           
+this.species[7].socialRadius[0] = 43.77937646691464;                           
+// force field for species 1:                                                  
+this.species[7].collisionForce[1] = 1.6877062603022652;                        
+this.species[7].collisionRadius[1] = 10.330276081529902;                       
+this.species[7].socialForce[1] = 0.46600469199292505;                          
+this.species[7].socialRadius[1] = 33.60752933966182;                           
+// force field for species 2:                                                  
+this.species[7].collisionForce[2] = 1.9689330677336998;                        
+this.species[7].collisionRadius[2] = 5.281414167223753;                        
+this.species[7].socialForce[2] = 3.7202356002736607;                           
+this.species[7].socialRadius[2] = 99.69913049156774;                           
+// force field for species 3:                                                  
+this.species[7].collisionForce[3] = 1.2176056123511636;                        
+this.species[7].collisionRadius[3] = 1.6635084067641293;                       
+this.species[7].socialForce[3] = 0.9600391479484642;                           
+this.species[7].socialRadius[3] = 54.40093738355985;                           
+// force field for species 4:                                                  
+this.species[7].collisionForce[4] = 0.21514455687154665;                       
+this.species[7].collisionRadius[4] = 9.071653410510649;                        
+this.species[7].socialForce[4] = 0.1286576504872059;                           
+this.species[7].socialRadius[4] = 99.23035206269547;                           
+// force field for species 5:                                                  
+this.species[7].collisionForce[5] = 1.0012295246682485;                        
+this.species[7].collisionRadius[5] = 4.396000398430351;                        
+this.species[7].socialForce[5] = 2.179346911342982;                            
+this.species[7].socialRadius[5] = 77.61305783333256;                           
+// force field for species 6:                                                  
+this.species[7].collisionForce[6] = 0.4203505243499399;                        
+this.species[7].collisionRadius[6] = 17.978716913140516;                       
+this.species[7].socialForce[6] = 0.650090832966983;                            
+this.species[7].socialRadius[6] = 79.82573270723319;                           
+// force field for species 7:                                                  
+this.species[7].collisionForce[7] = 0.8477568557294535;                        
+this.species[7].collisionRadius[7] = 13.651982906529094;                       
+this.species[7].socialForce[7] = -2.224340128298569;                           
+this.species[7].socialRadius[7] = 51.01207291588498;                           
+
+        	/*
+			this.numParticles = 1200;                                         
+			this.numSpecies = 11;                                            
+			this.initMode = 2;                                              
+			this.diskSize = 400;                                              
+			this.blur = 0.79;                                              	
+			this.scale = 1;                                              	
+			// species 0:                                              		
+			this.species[0].steps = 0;                                       
+			this.species[0].setColor( 191, 150, 144, 0.34820528036574205 );  
+			// force field for species 0:                                    
+			this.species[0].collisionForce[0] = 0.9930306849839075;          
+			this.species[0].collisionRadius[0] = 16.186903660503148;         
+			this.species[0].socialForce[0] = 1.4985375768343143;             
+			this.species[0].socialRadius[0] = 55.075167782944845;            
+			// force field for species 1:                                    
+			this.species[0].collisionForce[1] = 1.5008286500868195;          
+			this.species[0].collisionRadius[1] = 14.685443180483297;         
+			this.species[0].socialForce[1] = 3.347540620597252;              
+			this.species[0].socialRadius[1] = 45.00516908876094;             
+			// force field for species 2:                                    
+			this.species[0].collisionForce[2] = 1.475651142135235;           
+			this.species[0].collisionRadius[2] = 3.807743895527842;          
+			this.species[0].socialForce[2] = 4.64122801245421;               
+			this.species[0].socialRadius[2] = 10.579503364479908;            
+			// force field for species 3:                                    
+			this.species[0].collisionForce[3] = 0.4376835631034073;          
+			this.species[0].collisionRadius[3] = 2.9200710260047402;         
+			this.species[0].socialForce[3] = -1.6668109865946623;            
+			this.species[0].socialRadius[3] = 76.70899487955023;             
+			// force field for species 4:                                    
+			this.species[0].collisionForce[4] = 0.78507339089561;            
+			this.species[0].collisionRadius[4] = 15.38363369512939;          
+			this.species[0].socialForce[4] = 4.0903678770562895;             
+			this.species[0].socialRadius[4] = 84.30449053709653;             
+			// force field for species 5:                                    
+			this.species[0].collisionForce[5] = 1.8994586781335523;          
+			this.species[0].collisionRadius[5] = 19.392089733860175;         
+			this.species[0].socialForce[5] = 3.8949492589796115;             
+			this.species[0].socialRadius[5] = 31.480193032362415;            
+			// force field for species 6:                                    
+			this.species[0].collisionForce[6] = 0.9087381136891126;          
+			this.species[0].collisionRadius[6] = 2.722341622287814;          
+			this.species[0].socialForce[6] = 2.7922819983207674;             
+			this.species[0].socialRadius[6] = 77.61487553414992;             
+			// force field for species 7:                                    
+			this.species[0].collisionForce[7] = 1.9443234293316924;          
+			this.species[0].collisionRadius[7] = 19.239808003996526;         
+			this.species[0].socialForce[7] = 0.3032376365733125;             
+			this.species[0].socialRadius[7] = 39.91384688261134;             
+			// force field for species 8:                                    
+			this.species[0].collisionForce[8] = 0.7741593959006758;          
+			this.species[0].collisionRadius[8] = 16.116997553703946;         
+			this.species[0].socialForce[8] = -4.238521898385744;             
+			this.species[0].socialRadius[8] = 67.25606303726876;             
+			// force field for species 9:                                    
+			this.species[0].collisionForce[9] = 1.0629751454220069;          
+			this.species[0].collisionRadius[9] = 4.259983776919514;          
+			this.species[0].socialForce[9] = 2.5952549061014105;             
+			this.species[0].socialRadius[9] = 40.16073462452624;             
+			// force field for species 10:                                   
+			this.species[0].collisionForce[10] = 0.30527401606440563;        
+			this.species[0].collisionRadius[10] = 1.278662442587728;         
+			this.species[0].socialForce[10] = 4.968498256603226;             
+			this.species[0].socialRadius[10] = 3.4046906695882706;           
+			// species 1:                                              		
+			this.species[1].steps = 0;                                       
+			this.species[1].setColor( 122, 82, 71, 0.375891808230731 );      
+			// force field for species 0:                                    
+			this.species[1].collisionForce[0] = 0.280637179457234;           
+			this.species[1].collisionRadius[0] = 6.4047536770442175;         
+			this.species[1].socialForce[0] = -4.272880303389789;             
+			this.species[1].socialRadius[0] = 45.06322596547021;             
+			// force field for species 1:                                    
+			this.species[1].collisionForce[1] = 0.8855927708665194;          
+			this.species[1].collisionRadius[1] = 3.9981161040477553;         
+			this.species[1].socialForce[1] = -2.0078586345882323;            
+			this.species[1].socialRadius[1] = 57.316886547643875;            
+			// force field for species 2:                                    
+			this.species[1].collisionForce[2] = 0.7320519224401525;          
+			this.species[1].collisionRadius[2] = 8.950286135492284;          
+			this.species[1].socialForce[2] = 2.771647123082208;              
+			this.species[1].socialRadius[2] = 76.09077707014362;             
+			// force field for species 3:                                    
+			this.species[1].collisionForce[3] = 0.4540804589848473;          
+			this.species[1].collisionRadius[3] = 7.500705487852399;          
+			this.species[1].socialForce[3] = 1.6625492903905368;             
+			this.species[1].socialRadius[3] = 39.616522624514396;            
+			// force field for species 4:                                    
+			this.species[1].collisionForce[4] = 1.5238511408366655;          
+			this.species[1].collisionRadius[4] = 8.912188290106599;          
+			this.species[1].socialForce[4] = 2.345407180405859;              
+			this.species[1].socialRadius[4] = 68.95578200572584;             
+			// force field for species 5:                                    
+			this.species[1].collisionForce[5] = 1.0946425346760378;          
+			this.species[1].collisionRadius[5] = 11.57015665891825;          
+			this.species[1].socialForce[5] = -0.18412265739764067;           
+			this.species[1].socialRadius[5] = 57.09919542092611;             
+			// force field for species 6:                                    
+			this.species[1].collisionForce[6] = 0.6774039377108223;          
+			this.species[1].collisionRadius[6] = 15.461578620883603;         
+			this.species[1].socialForce[6] = 0.0990808125260969;             
+			this.species[1].socialRadius[6] = 74.70146903503662;             
+			// force field for species 7:                                    
+			this.species[1].collisionForce[7] = 1.1647075450337334;          
+			this.species[1].collisionRadius[7] = 5.263613683365156;          
+			this.species[1].socialForce[7] = -3.096637273101802;             
+			this.species[1].socialRadius[7] = 50.75497890971434;             
+			// force field for species 8:                                    
+			this.species[1].collisionForce[8] = 1.1543845804719808;          
+			this.species[1].collisionRadius[8] = 16.734808122189854;         
+			this.species[1].socialForce[8] = -3.6335784845969044;            
+			this.species[1].socialRadius[8] = 66.09355372657535;             
+			// force field for species 9:                                    
+			this.species[1].collisionForce[9] = 1.8108278155612676;          
+			this.species[1].collisionRadius[9] = 4.674118104016458;          
+			this.species[1].socialForce[9] = 1.9663264245100134;             
+			this.species[1].socialRadius[9] = 77.54261727321729;             
+			// force field for species 10:                                   
+			this.species[1].collisionForce[10] = 0.9544177993176794;         
+			this.species[1].collisionRadius[10] = 1.756518561420326;         
+			this.species[1].socialForce[10] = -4.282605890543024;            
+			this.species[1].socialRadius[10] = 85.06148308090009;            
+			// species 2:                                              		
+			this.species[2].steps = 0;                                       
+			this.species[2].setColor( 76, 112, 221, 0.47888412251800316 );   
+			// force field for species 0:                                    
+			this.species[2].collisionForce[0] = 0.8022481120472993;          
+			this.species[2].collisionRadius[0] = 3.7693493012877077;         
+			this.species[2].socialForce[0] = -2.951754924495602;             
+			this.species[2].socialRadius[0] = 87.22829272842758;             
+			// force field for species 1:                                    
+			this.species[2].collisionForce[1] = 1.3713093163062935;          
+			this.species[2].collisionRadius[1] = 5.112270101992847;          
+			this.species[2].socialForce[1] = -0.6921386545057011;            
+			this.species[2].socialRadius[1] = 71.67259090703047;             
+			// force field for species 2:                                    
+			this.species[2].collisionForce[2] = 1.5686895620500303;          
+			this.species[2].collisionRadius[2] = 16.126381572076465;         
+			this.species[2].socialForce[2] = 4.847211535197808;              
+			this.species[2].socialRadius[2] = 64.66409905894915;             
+			// force field for species 3:                                    
+			this.species[2].collisionForce[3] = 1.8081983892504694;          
+			this.species[2].collisionRadius[3] = 13.096240453250353;         
+			this.species[2].socialForce[3] = 0.10791975951355415;            
+			this.species[2].socialRadius[3] = 60.211819210289896;            
+			// force field for species 4:                                    
+			this.species[2].collisionForce[4] = 1.3581069195429913;          
+			this.species[2].collisionRadius[4] = 9.73901338267822;           
+			this.species[2].socialForce[4] = 0.36105132733463474;            
+			this.species[2].socialRadius[4] = 80.96709747161516;             
+			// force field for species 5:                                    
+			this.species[2].collisionForce[5] = 1.0843048017388837;          
+			this.species[2].collisionRadius[5] = 1.6984237157140791;         
+			this.species[2].socialForce[5] = 0.022986308847618986;           
+			this.species[2].socialRadius[5] = 73.04123820717318;             
+			// force field for species 6:                                    
+			this.species[2].collisionForce[6] = 0.20693460450570145;         
+			this.species[2].collisionRadius[6] = 11.194851714829227;         
+			this.species[2].socialForce[6] = -4.310016821224439;             
+			this.species[2].socialRadius[6] = 74.68790153100416;             
+			// force field for species 7:                                    
+			this.species[2].collisionForce[7] = 0.8130150217779555;          
+			this.species[2].collisionRadius[7] = 6.742516350911842;          
+			this.species[2].socialForce[7] = -4.206981254102048;             
+			this.species[2].socialRadius[7] = 64.38765326656022;             
+			// force field for species 8:                                    
+			this.species[2].collisionForce[8] = 0.6338832853261451;          
+			this.species[2].collisionRadius[8] = 10.557495412918625;         
+			this.species[2].socialForce[8] = 3.7817175588763767;             
+			this.species[2].socialRadius[8] = 73.8462195901145;              
+			// force field for species 9:                                    
+			this.species[2].collisionForce[9] = 1.4743166097047475;          
+			this.species[2].collisionRadius[9] = 9.398135825366872;          
+			this.species[2].socialForce[9] = 1.7717969084661416;             
+			this.species[2].socialRadius[9] = 16.65295645516303;             
+			// force field for species 10:                                   
+			this.species[2].collisionForce[10] = 0.31212178133185753;        
+			this.species[2].collisionRadius[10] = 15.900210542662151;        
+			this.species[2].socialForce[10] = 0.19578414220731055;           
+			this.species[2].socialRadius[10] = 115.02103957767395;           
+			// species 3:                                              		
+			this.species[3].steps = 0;                                       
+			this.species[3].setColor( 224, 109, 187, 0.893657279749102 );    
+			// force field for species 0:                                    
+			this.species[3].collisionForce[0] = 1.1076744712784385;          
+			this.species[3].collisionRadius[0] = 11.404724672648292;         
+			this.species[3].socialForce[0] = 0.5587001240179479;             
+			this.species[3].socialRadius[0] = 88.30616963342845;             
+			// force field for species 1:                                    
+			this.species[3].collisionForce[1] = 1.2189515940782039;          
+			this.species[3].collisionRadius[1] = 11.612996026648794;         
+			this.species[3].socialForce[1] = 0.8523354440037734;             
+			this.species[3].socialRadius[1] = 68.83971661693225;             
+			// force field for species 2:                                    
+			this.species[3].collisionForce[2] = 0.23557974562615613;         
+			this.species[3].collisionRadius[2] = 2.700798833812883;          
+			this.species[3].socialForce[2] = 4.57338298697236;               
+			this.species[3].socialRadius[2] = 74.11480331911417;             
+			// force field for species 3:                                    
+			this.species[3].collisionForce[3] = 1.581429765019809;           
+			this.species[3].collisionRadius[3] = 17.178787458328305;         
+			this.species[3].socialForce[3] = 1.2999249386277913;             
+			this.species[3].socialRadius[3] = 65.04853446159014;             
+			// force field for species 4:                                    
+			this.species[3].collisionForce[4] = 0.5899472521791675;          
+			this.species[3].collisionRadius[4] = 2.4238543812010627;         
+			this.species[3].socialForce[4] = 4.676320317745617;              
+			this.species[3].socialRadius[4] = 54.30941815737806;             
+			// force field for species 5:                                    
+			this.species[3].collisionForce[5] = 1.671714739550658;           
+			this.species[3].collisionRadius[5] = 6.493666178881405;          
+			this.species[3].socialForce[5] = -1.8385852803196103;            
+			this.species[3].socialRadius[5] = 103.8072388124389;             
+			// force field for species 6:                                    
+			this.species[3].collisionForce[6] = 0.3837919880671885;          
+			this.species[3].collisionRadius[6] = 4.329925251950266;          
+			this.species[3].socialForce[6] = 2.9780018705032987;             
+			this.species[3].socialRadius[6] = 97.00249713957403;             
+			// force field for species 7:                                    
+			this.species[3].collisionForce[7] = 0.1509783816825696;          
+			this.species[3].collisionRadius[7] = 4.756550647812512;          
+			this.species[3].socialForce[7] = -0.3273060006289974;            
+			this.species[3].socialRadius[7] = 47.62339010837953;             
+			// force field for species 8:                                    
+			this.species[3].collisionForce[8] = 0.7123805836401191;          
+			this.species[3].collisionRadius[8] = 19.364070236762842;         
+			this.species[3].socialForce[8] = 4.402411399904786;              
+			this.species[3].socialRadius[8] = 55.120247118714296;            
+			// force field for species 9:                                    
+			this.species[3].collisionForce[9] = 1.4459296711520393;          
+			this.species[3].collisionRadius[9] = 6.313806003040248;          
+			this.species[3].socialForce[9] = -0.13847592158788657;           
+			this.species[3].socialRadius[9] = 40.71934008335102;             
+			// force field for species 10:                                   
+			this.species[3].collisionForce[10] = 0.7235909412237882;         
+			this.species[3].collisionRadius[10] = 5.043336657556495;         
+			this.species[3].socialForce[10] = 0.2034050197400381;            
+			this.species[3].socialRadius[10] = 58.07142192832525;            
+			// species 4:                                              		
+			this.species[4].steps = 0;                                       
+			this.species[4].setColor( 173, 248, 164, 0.4574901853207215 );   
+			// force field for species 0:                                    
+			this.species[4].collisionForce[0] = 0.2583646320018693;          
+			this.species[4].collisionRadius[0] = 11.41828107278763;          
+			this.species[4].socialForce[0] = 3.823850424708297;              
+			this.species[4].socialRadius[0] = 62.41859469691901;             
+			// force field for species 1:                                    
+			this.species[4].collisionForce[1] = 1.3261743162733277;          
+			this.species[4].collisionRadius[1] = 19.078493216372795;         
+			this.species[4].socialForce[1] = -4.666995776272963;             
+			this.species[4].socialRadius[1] = 102.39270258720845;            
+			// force field for species 2:                                    
+			this.species[4].collisionForce[2] = 1.6814960556774403;          
+			this.species[4].collisionRadius[2] = 2.6800821015939813;         
+			this.species[4].socialForce[2] = 4.130750750755235;              
+			this.species[4].socialRadius[2] = 102.39707579416746;            
+			// force field for species 3:                                    
+			this.species[4].collisionForce[3] = 1.694075714862151;           
+			this.species[4].collisionRadius[3] = 2.201988616023216;          
+			this.species[4].socialForce[3] = 2.547914071409364;              
+			this.species[4].socialRadius[3] = 19.866454966703834;            
+			// force field for species 4:                                    
+			this.species[4].collisionForce[4] = 1.167613609067514;           
+			this.species[4].collisionRadius[4] = 8.184410521919304;          
+			this.species[4].socialForce[4] = -2.3159994355428113;            
+			this.species[4].socialRadius[4] = 83.39016195822813;             
+			// force field for species 5:                                    
+			this.species[4].collisionForce[5] = 1.8900259239748793;          
+			this.species[4].collisionRadius[5] = 12.34836425481806;          
+			this.species[4].socialForce[5] = 4.032019992931605;              
+			this.species[4].socialRadius[5] = 74.39769366725457;             
+			// force field for species 6:                                    
+			this.species[4].collisionForce[6] = 1.1821790100269918;          
+			this.species[4].collisionRadius[6] = 2.8859659169442753;         
+			this.species[4].socialForce[6] = 1.3858897785654856;             
+			this.species[4].socialRadius[6] = 93.47725628688569;             
+			// force field for species 7:                                    
+			this.species[4].collisionForce[7] = 0.4278196619850714;          
+			this.species[4].collisionRadius[7] = 11.232562171559161;         
+			this.species[4].socialForce[7] = -4.920889113636157;             
+			this.species[4].socialRadius[7] = 50.37214411367843;             
+			// force field for species 8:                                    
+			this.species[4].collisionForce[8] = 0.2267137194897555;          
+			this.species[4].collisionRadius[8] = 12.497995421531616;         
+			this.species[4].socialForce[8] = -2.4875029270115934;            
+			this.species[4].socialRadius[8] = 103.05827949742407;            
+			// force field for species 9:                                    
+			this.species[4].collisionForce[9] = 0.3962156669541326;          
+			this.species[4].collisionRadius[9] = 9.2617955360896;            
+			this.species[4].socialForce[9] = -2.0875996492752122;            
+			this.species[4].socialRadius[9] = 81.33852597547246;             
+			// force field for species 10:                                   
+			this.species[4].collisionForce[10] = 1.220451938098614;          
+			this.species[4].collisionRadius[10] = 13.778047631404274;        
+			this.species[4].socialForce[10] = 2.863286291901421;             
+			this.species[4].socialRadius[10] = 13.785749097512353;           
+			// species 5:                                              		
+			this.species[5].steps = 0;                                       
+			this.species[5].setColor( 219, 196, 138, 0.6063227050639434 );   
+			// force field for species 0:                                    
+			this.species[5].collisionForce[0] = 0.006514487633890287;        
+			this.species[5].collisionRadius[0] = 6.146808266779846;          
+			this.species[5].socialForce[0] = 0.5776242728700707;             
+			this.species[5].socialRadius[0] = 55.8749559261929;              
+			// force field for species 1:                                    
+			this.species[5].collisionForce[1] = 1.415258163489731;           
+			this.species[5].collisionRadius[1] = 0.7044827833517986;         
+			this.species[5].socialForce[1] = -0.8330465110109406;            
+			this.species[5].socialRadius[1] = 89.49831523875632;             
+			// force field for species 2:                                    
+			this.species[5].collisionForce[2] = 1.832092884985602;           
+			this.species[5].collisionRadius[2] = 10.313096681401655;         
+			this.species[5].socialForce[2] = 4.882908342916208;              
+			this.species[5].socialRadius[2] = 27.70555415492739;             
+			// force field for species 3:                                    
+			this.species[5].collisionForce[3] = 1.674794285966578;           
+			this.species[5].collisionRadius[3] = 10.220958318904191;         
+			this.species[5].socialForce[3] = -1.9457890944904;               
+			this.species[5].socialRadius[3] = 54.67468752515806;             
+			// force field for species 4:                                    
+			this.species[5].collisionForce[4] = 0.10535969916144738;         
+			this.species[5].collisionRadius[4] = 8.907740352384902;          
+			this.species[5].socialForce[4] = 2.832617941523332;              
+			this.species[5].socialRadius[4] = 77.34725992393194;             
+			// force field for species 5:                                    
+			this.species[5].collisionForce[5] = 1.7084336274793;             
+			this.species[5].collisionRadius[5] = 7.334261420308598;          
+			this.species[5].socialForce[5] = 0.17933148877879113;            
+			this.species[5].socialRadius[5] = 105.89307617091875;            
+			// force field for species 6:                                    
+			this.species[5].collisionForce[6] = 0.042199424288664744;        
+			this.species[5].collisionRadius[6] = 4.361828074555898;          
+			this.species[5].socialForce[6] = -0.8517886456068986;            
+			this.species[5].socialRadius[6] = 104.35741313173466;            
+			// force field for species 7:                                    
+			this.species[5].collisionForce[7] = 0.5878284327343875;          
+			this.species[5].collisionRadius[7] = 9.930573503085448;          
+			this.species[5].socialForce[7] = -4.581642367351724;             
+			this.species[5].socialRadius[7] = 99.78582764638136;             
+			// force field for species 8:                                    
+			this.species[5].collisionForce[8] = 1.5126846197062336;          
+			this.species[5].collisionRadius[8] = 1.4650398980651769;         
+			this.species[5].socialForce[8] = -1.6194987480654088;            
+			this.species[5].socialRadius[8] = 93.04288670646359;             
+			// force field for species 9:                                    
+			this.species[5].collisionForce[9] = 1.377259591456152;           
+			this.species[5].collisionRadius[9] = 12.163291402252431;         
+			this.species[5].socialForce[9] = -2.807320481106875;             
+			this.species[5].socialRadius[9] = 55.45575541522023;             
+			// force field for species 10:                                   
+			this.species[5].collisionForce[10] = 0.02879376352261831;        
+			this.species[5].collisionRadius[10] = 8.759463775421077;         
+			this.species[5].socialForce[10] = -2.5970402246832123;           
+			this.species[5].socialRadius[10] = 50.89854670624577;            
+			// species 6:                                              		
+			this.species[6].steps = 0;                                       
+			this.species[6].setColor( 221, 143, 221, 0.9364468317274832 );   
+			// force field for species 0:                                    
+			this.species[6].collisionForce[0] = 0.48174217744241;            
+			this.species[6].collisionRadius[0] = 12.366380790421424;         
+			this.species[6].socialForce[0] = -3.0155509819199033;            
+			this.species[6].socialRadius[0] = 75.42291007758777;             
+			// force field for species 1:                                    
+			this.species[6].collisionForce[1] = 0.7136997112731562;          
+			this.species[6].collisionRadius[1] = 7.52432049820742;           
+			this.species[6].socialForce[1] = 0.13100651200411484;            
+			this.species[6].socialRadius[1] = 45.839418616538495;            
+			// force field for species 2:                                    
+			this.species[6].collisionForce[2] = 1.2980439481171886;          
+			this.species[6].collisionRadius[2] = 19.936713469565113;         
+			this.species[6].socialForce[2] = -0.8655815742283677;            
+			this.species[6].socialRadius[2] = 81.15653052845693;             
+			// force field for species 3:                                    
+			this.species[6].collisionForce[3] = 0.4980872225148463;          
+			this.species[6].collisionRadius[3] = 6.766820189815787;          
+			this.species[6].socialForce[3] = -2.0515893881600467;            
+			this.species[6].socialRadius[3] = 92.2367192106351;              
+			// force field for species 4:                                    
+			this.species[6].collisionForce[4] = 1.234354489722246;           
+			this.species[6].collisionRadius[4] = 1.7164675868857548;         
+			this.species[6].socialForce[4] = 3.116161133469028;              
+			this.species[6].socialRadius[4] = 42.739148995128154;            
+			// force field for species 5:                                    
+			this.species[6].collisionForce[5] = 0.5493800115357941;          
+			this.species[6].collisionRadius[5] = 8.170326295985571;          
+			this.species[6].socialForce[5] = -3.265600604178096;             
+			this.species[6].socialRadius[5] = 107.93538655419958;            
+			// force field for species 6:                                    
+			this.species[6].collisionForce[6] = 0.03125757484297376;         
+			this.species[6].collisionRadius[6] = 6.51130098205037;           
+			this.species[6].socialForce[6] = 4.087050885251207;              
+			this.species[6].socialRadius[6] = 26.054855916767693;            
+			// force field for species 7:                                    
+			this.species[6].collisionForce[7] = 1.4353842552548455;          
+			this.species[6].collisionRadius[7] = 6.752965645932479;          
+			this.species[6].socialForce[7] = 2.787951094272981;              
+			this.species[6].socialRadius[7] = 62.01952733458587;             
+			// force field for species 8:                                    
+			this.species[6].collisionForce[8] = 0.1043816250827585;          
+			this.species[6].collisionRadius[8] = 9.481672718607776;          
+			this.species[6].socialForce[8] = -3.2677292782044276;            
+			this.species[6].socialRadius[8] = 101.34599013637822;            
+			// force field for species 9:                                    
+			this.species[6].collisionForce[9] = 0.5990595968109118;          
+			this.species[6].collisionRadius[9] = 18.144359902811548;         
+			this.species[6].socialForce[9] = -0.6959377380609659;            
+			this.species[6].socialRadius[9] = 58.59897781981091;             
+			// force field for species 10:                                   
+			this.species[6].collisionForce[10] = 0.38960078007434484;        
+			this.species[6].collisionRadius[10] = 12.032119581910592;        
+			this.species[6].socialForce[10] = -4.44898810785281;             
+			this.species[6].socialRadius[10] = 91.82261052223444;            
+			// species 7:                                              		
+			this.species[7].steps = 1;                                       
+			this.species[7].setColor( 224, 179, 189, 0.6557340520827892 );   
+			// force field for species 0:                                    
+			this.species[7].collisionForce[0] = 1.2359560347784695;          
+			this.species[7].collisionRadius[0] = 7.980370808594783;          
+			this.species[7].socialForce[0] = -3.8883219781326437;            
+			this.species[7].socialRadius[0] = 91.10553858748797;             
+			// force field for species 1:                                    
+			this.species[7].collisionForce[1] = 0.9512861990067827;          
+			this.species[7].collisionRadius[1] = 6.560978581155257;          
+			this.species[7].socialForce[1] = -1.4297966145748409;            
+			this.species[7].socialRadius[1] = 96.96110125271007;             
+			// force field for species 2:                                    
+			this.species[7].collisionForce[2] = 1.0655501541952273;          
+			this.species[7].collisionRadius[2] = 19.91362598848055;          
+			this.species[7].socialForce[2] = -3.048642676158045;             
+			this.species[7].socialRadius[2] = 102.43246352980808;            
+			// force field for species 3:                                    
+			this.species[7].collisionForce[3] = 1.1061768994083128;          
+			this.species[7].collisionRadius[3] = 5.901489881845404;          
+			this.species[7].socialForce[3] = -3.203057139460207;             
+			this.species[7].socialRadius[3] = 66.99948919452376;             
+			// force field for species 4:                                    
+			this.species[7].collisionForce[4] = 1.597276442824242;           
+			this.species[7].collisionRadius[4] = 18.426744577455914;         
+			this.species[7].socialForce[4] = -4.014612685794848;             
+			this.species[7].socialRadius[4] = 21.673406101659644;            
+			// force field for species 5:                                    
+			this.species[7].collisionForce[5] = 0.41376869351414536;         
+			this.species[7].collisionRadius[5] = 0.53275113315576;           
+			this.species[7].socialForce[5] = -3.6873913204549447;            
+			this.species[7].socialRadius[5] = 8.556519852095686;             
+			// force field for species 6:                                    
+			this.species[7].collisionForce[6] = 0.8052379789535138;          
+			this.species[7].collisionRadius[6] = 5.987009098728587;          
+			this.species[7].socialForce[6] = -4.794163592099587;             
+			this.species[7].socialRadius[6] = 14.453713899383832;            
+			// force field for species 7:                                    
+			this.species[7].collisionForce[7] = 0.9191851474821138;          
+			this.species[7].collisionRadius[7] = 13.637615480817589;         
+			this.species[7].socialForce[7] = -3.331025337624437;             
+			this.species[7].socialRadius[7] = 25.766489665035905;            
+			// force field for species 8:                                    
+			this.species[7].collisionForce[8] = 1.2726216095870435;          
+			this.species[7].collisionRadius[8] = 5.671729818419109;          
+			this.species[7].socialForce[8] = 1.817632637815402;              
+			this.species[7].socialRadius[8] = 43.160309308240606;            
+			// force field for species 9:                                    
+			this.species[7].collisionForce[9] = 0.5540455234968369;          
+			this.species[7].collisionRadius[9] = 0.22318098417714483;        
+			this.species[7].socialForce[9] = -1.266592204315895;             
+			this.species[7].socialRadius[9] = 23.267246248985554;            
+			// force field for species 10:                                   
+			this.species[7].collisionForce[10] = 0.04530821472644764;        
+			this.species[7].collisionRadius[10] = 10.246673081421465;        
+			this.species[7].socialForce[10] = -4.5007856196759635;           
+			this.species[7].socialRadius[10] = 32.07787386318321;            
+			// species 8:                                              		
+			this.species[8].steps = 4;                                       
+			this.species[8].setColor( 226, 191, 241, 0.5424183513096572 );   
+			// force field for species 0:                                    
+			this.species[8].collisionForce[0] = 0.2657058501534215;          
+			this.species[8].collisionRadius[0] = 5.948998695958954;          
+			this.species[8].socialForce[0] = 0.44055356553402003;            
+			this.species[8].socialRadius[0] = 47.04353436092107;             
+			// force field for species 1:                                    
+			this.species[8].collisionForce[1] = 0.15815933637679458;         
+			this.species[8].collisionRadius[1] = 6.829690434614535;          
+			this.species[8].socialForce[1] = 1.0017748711044554;             
+			this.species[8].socialRadius[1] = 21.783885690745432;            
+			// force field for species 2:                                    
+			this.species[8].collisionForce[2] = 1.487723858762541;           
+			this.species[8].collisionRadius[2] = 2.074176936727339;          
+			this.species[8].socialForce[2] = -0.19428944391273095;           
+			this.species[8].socialRadius[2] = 50.88436718657613;             
+			// force field for species 3:                                    
+			this.species[8].collisionForce[3] = 1.6322219767735753;          
+			this.species[8].collisionRadius[3] = 2.7395113464201315;         
+			this.species[8].socialForce[3] = -1.078623047320224;             
+			this.species[8].socialRadius[3] = 63.014063711627095;            
+			// force field for species 4:                                    
+			this.species[8].collisionForce[4] = 1.5757491993713375;          
+			this.species[8].collisionRadius[4] = 2.1920551148691025;         
+			this.species[8].socialForce[4] = -0.8485841879782647;            
+			this.species[8].socialRadius[4] = 36.66523266313288;             
+			// force field for species 5:                                    
+			this.species[8].collisionForce[5] = 1.9490560030561053;          
+			this.species[8].collisionRadius[5] = 5.60707053442764;           
+			this.species[8].socialForce[5] = 4.1348808077908;                
+			this.species[8].socialRadius[5] = 46.6516870402038;              
+			// force field for species 6:                                    
+			this.species[8].collisionForce[6] = 0.9581450334435757;          
+			this.species[8].collisionRadius[6] = 3.1273814477914463;         
+			this.species[8].socialForce[6] = -3.0354523049610904;            
+			this.species[8].socialRadius[6] = 58.17958085345967;             
+			// force field for species 7:                                    
+			this.species[8].collisionForce[7] = 0.6790395775410734;          
+			this.species[8].collisionRadius[7] = 9.195346436775122;          
+			this.species[8].socialForce[7] = 1.648428293983609;              
+			this.species[8].socialRadius[7] = 10.18393078715344;             
+			// force field for species 8:                                    
+			this.species[8].collisionForce[8] = 1.8494133126330583;          
+			this.species[8].collisionRadius[8] = 8.296276912763885;          
+			this.species[8].socialForce[8] = 3.7945523435238044;             
+			this.species[8].socialRadius[8] = 104.90528704419026;            
+			// force field for species 9:                                    
+			this.species[8].collisionForce[9] = 1.6216248801408168;          
+			this.species[8].collisionRadius[9] = 11.09391106060082;          
+			this.species[8].socialForce[9] = -4.831188199715871;             
+			this.species[8].socialRadius[9] = 101.89879122517941;            
+			// force field for species 10:                                   
+			this.species[8].collisionForce[10] = 1.733412171351934;          
+			this.species[8].collisionRadius[10] = 17.550001667744354;        
+			this.species[8].socialForce[10] = -3.309109305825247;            
+			this.species[8].socialRadius[10] = 67.63420205995757;            
+			// species 9:                                              		
+			this.species[9].steps = 0;                                       
+			this.species[9].setColor( 124, 158, 174, 0.5367648014251035 );   
+			// force field for species 0:                                    
+			this.species[9].collisionForce[0] = 0.09568997984650163;         
+			this.species[9].collisionRadius[0] = 1.3588763207200105;         
+			this.species[9].socialForce[0] = 4.123937249382077;              
+			this.species[9].socialRadius[0] = 89.46585381005343;             
+			// force field for species 1:                                    
+			this.species[9].collisionForce[1] = 1.404156003409674;           
+			this.species[9].collisionRadius[1] = 19.137853899486515;         
+			this.species[9].socialForce[1] = -4.789138465392616;             
+			this.species[9].socialRadius[1] = 46.92728793126202;             
+			// force field for species 2:                                    
+			this.species[9].collisionForce[2] = 0.5004419638232631;          
+			this.species[9].collisionRadius[2] = 15.423386108051393;         
+			this.species[9].socialForce[2] = -2.439166258825687;             
+			this.species[9].socialRadius[2] = 63.24976459152903;             
+			// force field for species 3:                                    
+			this.species[9].collisionForce[3] = 1.7732027967493202;          
+			this.species[9].collisionRadius[3] = 4.052602825691361;          
+			this.species[9].socialForce[3] = 2.8750923583949195;             
+			this.species[9].socialRadius[3] = 14.231571480366375;            
+			// force field for species 4:                                    
+			this.species[9].collisionForce[4] = 0.3783440746024258;          
+			this.species[9].collisionRadius[4] = 6.816069489441558;          
+			this.species[9].socialForce[4] = -2.877722670307027;             
+			this.species[9].socialRadius[4] = 67.93535881841214;             
+			// force field for species 5:                                    
+			this.species[9].collisionForce[5] = 1.2750554338624536;          
+			this.species[9].collisionRadius[5] = 8.056046122187706;          
+			this.species[9].socialForce[5] = -1.4264703479848984;            
+			this.species[9].socialRadius[5] = 16.749914040126477;            
+			// force field for species 6:                                    
+			this.species[9].collisionForce[6] = 0.3951939208338646;          
+			this.species[9].collisionRadius[6] = 12.149717140375738;         
+			this.species[9].socialForce[6] = -4.076750570740943;             
+			this.species[9].socialRadius[6] = 106.48302655590331;            
+			// force field for species 7:                                    
+			this.species[9].collisionForce[7] = 0.7772609342035799;          
+			this.species[9].collisionRadius[7] = 5.109496987490898;          
+			this.species[9].socialForce[7] = 2.2728426177882834;             
+			this.species[9].socialRadius[7] = 19.732056413229788;            
+			// force field for species 8:                                    
+			this.species[9].collisionForce[8] = 1.7431362860155188;          
+			this.species[9].collisionRadius[8] = 8.911777683919254;          
+			this.species[9].socialForce[8] = -4.080816169004805;             
+			this.species[9].socialRadius[8] = 19.92483154381223;             
+			// force field for species 9:                                    
+			this.species[9].collisionForce[9] = 0.9425113899002764;          
+			this.species[9].collisionRadius[9] = 2.747105531922658;          
+			this.species[9].socialForce[9] = -0.4592809120595689;            
+			this.species[9].socialRadius[9] = 90.01721570239903;             
+			// force field for species 10:                                   
+			this.species[9].collisionForce[10] = 1.526765991811066;          
+			this.species[9].collisionRadius[10] = 5.98264899338532;          
+			this.species[9].socialForce[10] = -2.994256016093455;            
+			this.species[9].socialRadius[10] = 69.2935355410442;             
+			// species 10:                                              	
+			this.species[10].steps = 0;                                      
+			this.species[10].setColor( 66, 156, 222, 0.26247127443865337 );  
+			// force field for species 0:                                    
+			this.species[10].collisionForce[0] = 1.4748449637210752;         
+			this.species[10].collisionRadius[0] = 0.20757514497868446;       
+			this.species[10].socialForce[0] = -3.6058825809676556;           
+			this.species[10].socialRadius[0] = 31.053867938635722;           
+			// force field for species 1:                                    
+			this.species[10].collisionForce[1] = 1.4817879357939354;         
+			this.species[10].collisionRadius[1] = 10.123008907304595;        
+			this.species[10].socialForce[1] = 1.976642554545399;             
+			this.species[10].socialRadius[1] = 89.54198608407224;            
+			// force field for species 2:                                    
+			this.species[10].collisionForce[2] = 0.8560137824726073;         
+			this.species[10].collisionRadius[2] = 11.713162811078949;        
+			this.species[10].socialForce[2] = -1.7689040435985737;           
+			this.species[10].socialRadius[2] = 104.19617246859099;           
+			// force field for species 3:                                    
+			this.species[10].collisionForce[3] = 1.5962179665166478;         
+			this.species[10].collisionRadius[3] = 11.767635792969028;        
+			this.species[10].socialForce[3] = -3.101569618070817;            
+			this.species[10].socialRadius[3] = 65.75439170001087;            
+			// force field for species 4:                                    
+			this.species[10].collisionForce[4] = 1.4076032225730712;         
+			this.species[10].collisionRadius[4] = 17.317302705279676;        
+			this.species[10].socialForce[4] = -1.28330798658412;             
+			this.species[10].socialRadius[4] = 25.38451366062761;            
+			// force field for species 5:                                    
+			this.species[10].collisionForce[5] = 1.7696443250246356;         
+			this.species[10].collisionRadius[5] = 5.391222747951923;         
+			this.species[10].socialForce[5] = 1.443019447093043;             
+			this.species[10].socialRadius[5] = 70.44881729574244;            
+			// force field for species 6:                                    
+			this.species[10].collisionForce[6] = 0.5343416555997464;         
+			this.species[10].collisionRadius[6] = 6.505728159592621;         
+			this.species[10].socialForce[6] = -4.059778362018488;            
+			this.species[10].socialRadius[6] = 97.94927764574611;            
+			// force field for species 7:                                    
+			this.species[10].collisionForce[7] = 1.5090204459723255;         
+			this.species[10].collisionRadius[7] = 13.241334606356707;        
+			this.species[10].socialForce[7] = -0.8937421390762363;           
+			this.species[10].socialRadius[7] = 42.182820135202164;           
+			// force field for species 8:                                    
+			this.species[10].collisionForce[8] = 1.1057314935882048;         
+			this.species[10].collisionRadius[8] = 8.875557410639203;         
+			this.species[10].socialForce[8] = 4.946024276204202;             
+			this.species[10].socialRadius[8] = 23.251313204074002;           
+			// force field for species 9:                                    
+			this.species[10].collisionForce[9] = 1.413865833292254;          
+			this.species[10].collisionRadius[9] = 0.7021282140167973;        
+			this.species[10].socialForce[9] = -2.9590787823481977;           
+			this.species[10].socialRadius[9] = 3.6155870916314914;           
+			// force field for species 10:                                   
+			this.species[10].collisionForce[10] = 0.658417356988777;         
+			this.species[10].collisionRadius[10] = 12.86271005166949;        
+			this.species[10].socialForce[10] = 4.881884589187074;            
+			this.species[10].socialRadius[10] = 85.39042421966893;           
+			*/
+		
+		
+        
+        
+        
+        	/*
+	    	this.numParticles = 1000;
+			this.numSpecies = 6;
+			this.initMode = INIT_MODE_FULL;		
+			this.diskSize = 200.0;
+    	
+			for (let s=0; s<MAX_SPECIES; s++)
+			{
+				this.species[s].halo = false;
+				this.species[s].steps = 0;
+				this.species[s].averageForces = false;
+				this.species[s].nonAverageForce = 0.01;
+				this.species[s].friction = 0.1;
+										
+				for (let f=0; f<MAX_SPECIES; f++)
+				{
+					this.species[s].collisionForce 	[f] =  MIN_COLLISION_FORCE  + Math.random() * ( MAX_COLLISION_FORCE  - MIN_COLLISION_FORCE  );            
+					this.species[s].collisionRadius	[f] =  MIN_COLLISION_RADIUS + Math.random() * ( MAX_COLLISION_RADIUS - MIN_COLLISION_RADIUS );            
+					this.species[s].socialForce 	[f] = -MAX_SOCIAL_FORCE 	+ Math.random() *   MAX_SOCIAL_FORCE * 2.0;
+					this.species[s].socialRadius	[f] = this.species[s].collisionRadius[f] + MAX_SOCIAL_RADIUS * Math.random();
+					this.species[s].socialRamp		[f] = ( Math.random() > ONE_HALF );
+				}	
+			}
+
+			this.randomizeSpeciesColors();	
+			*/		
         
         	//step test...
         	/*
@@ -1835,6 +2927,11 @@ this.species[7].socialRadius[7] = 7.546012140687461;                            
             this.species[11].socialRadius[ 11] = 46.74756654973118;
             this.species[11].steps = 1;
 		}		
+		
+		
+this.save( "what?" );
+
+
 	}
 
 	//--------------------------------------------

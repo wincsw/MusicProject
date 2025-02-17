@@ -639,7 +639,7 @@ _particles[i].addForce( -xDir * f, -yDir * f );
 		else if ( id === "buttonBang" 		) { this.loadEcosystem( ECO_BANG	   	); }
 		else if ( id === "buttonDemo" 		) { this.loadEcosystem( ECO_DEMO	   	); }
 		else if ( id === "buttonPollack" 	) { this.loadEcosystem( ECO_POLLACK	   	); }
-		else if ( id === "buttonThrob" 		) { this.loadEcosystem( ECO_THROB	   	); }
+		else if ( id === "buttonDream" 		) { this.loadEcosystem( ECO_DREAM	   	); }
 		else if ( id === "buttonColors" ) 
 		{ 
 			_ecosystem.randomizeSpeciesColors();
