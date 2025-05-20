@@ -148,7 +148,9 @@ function Clusters() {
         //this.loadEcosystem( ECO_DEMO ); 
         //this.loadEcosystem( -1 ); 
 
-        this.loadEcosystem(ECO_DEMO);
+        this.loadEcosystem(ECO_ALLIANCES);
+        _ecosystem.blur = 0.2;
+
 
         //this.loadEcosystem( ECO_DEMO );		
 
@@ -162,20 +164,28 @@ function Clusters() {
             Particles: _ecosystem.numParticles,
             Species: _ecosystem.numSpecies,
             Trails: _ecosystem.blur,
-            Ecosystem: 'Demo',
-            ChangeColor: function () {
-                _ecosystem.randomizeSpeciesColors();
+            Ecosystem: 'Alliances',
+            // ChangeColor: function () {
+            //     _ecosystem.randomizeSpeciesColors();
 
-                for (let i = 0; i < MAX_PARTICLES; i++) {
-                    _particles[i].setColor(_ecosystem.species[_particles[i].species].color);
-                }
-            },
+            //     for (let i = 0; i < MAX_PARTICLES; i++) {
+            //         _particles[i].setColor(_ecosystem.species[_particles[i].species].color);
+            //     }
+            // },
             Pause: function () {
                 if (_frozen) {
                     _frozen = false;
                 }
                 else {
                     _frozen = true;
+                }
+            },
+            Zap: function () {
+                for (let i = 0; i < MAX_PARTICLES; i++) {
+                    let x = -40.0 * ONE_HALF + Math.random() * 40.0;
+                    let y = -40.0 * ONE_HALF + Math.random() * 40.0;
+
+                    _particles[i].velocity.setXY(x, y);
                 }
             }
         }
@@ -186,12 +196,12 @@ function Clusters() {
             console.log(`New Particle Number: ${_ecosystem.numParticles}`);
         });
         particleSlider.listen(true);
-        const speciesSlider = gui.add(obj, 'Species', MIN_SPECIES, MAX_SPECIES, 1);
-        speciesSlider.onFinishChange(value => {
-            _ecosystem.numSpecies = value;
-            console.log(`New Species Number: ${_ecosystem.numSpecies}`);
-        });
-        speciesSlider.listen(true);
+        // const speciesSlider = gui.add(obj, 'Species', MIN_SPECIES, MAX_SPECIES, 1);
+        // speciesSlider.onFinishChange(value => {
+        //     _ecosystem.numSpecies = value;
+        //     console.log(`New Species Number: ${_ecosystem.numSpecies}`);
+        // });
+        // speciesSlider.listen(true);
 
 
         // gui.add(obj, 'Trails', 0, 1, 0.01).onFinishChange(value => {
@@ -217,9 +227,12 @@ function Clusters() {
             particleSlider.updateDisplay();
             speciesSlider.setValue(_ecosystem.numSpecies);
             speciesSlider.updateDisplay();
+            _ecosystem.blur = 0.2;
+
         });
 
-        gui.add(obj, 'ChangeColor');
+        // gui.add(obj, 'ChangeColor');
+        gui.add(obj, 'Zap');
         gui.add(obj, 'Pause');
 
 

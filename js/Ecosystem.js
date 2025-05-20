@@ -40,7 +40,7 @@ const NUM_INIT_MODES = 9;
 // limits and defaults
 //--------------------------------------
 const MIN_PARTICLES = 1;
-const MAX_PARTICLES = 500;
+const MAX_PARTICLES = 1000;
 const MIN_SPECIES = 1;
 const MAX_SPECIES = 12;
 const MIN_COLLISION_FORCE = 0.0;
@@ -224,7 +224,7 @@ function Ecosystem() {
         //-----------------------------------------
         else if (e === ECO_ALLIANCES) {
             this.numSpecies = 12;
-            this.numParticles = 500;
+            this.numParticles = MAX_PARTICLES;
             this.blur = ALLIANCE_MOTION_BLUR;
 
             for (let t = 0; t < this.numSpecies; t++) {
@@ -287,7 +287,7 @@ function Ecosystem() {
         //-----------------------------------------
         else if (e === ECO_FIELD) {
             this.numSpecies = 2;
-            this.numParticles = 500;
+            this.numParticles = MAX_PARTICLES;
             this.initMode = INIT_MODE_DISK;
             this.diskSize = 5.0;
 
@@ -320,7 +320,7 @@ function Ecosystem() {
         //-----------------------------------------
         else if (e === ECO_FLUID) {
             this.numSpecies = 2;
-            this.numParticles = 500;
+            this.numParticles = MAX_PARTICLES;
             this.initMode = INIT_MODE_FULL;
             this.diskSize = 50.0;
 
@@ -358,7 +358,7 @@ function Ecosystem() {
         //-----------------------------------------
         else if (e === ECO_MITOSIS) {
             this.numSpecies = 12;
-            this.numParticles = 500;
+            this.numParticles = MAX_PARTICLES;
             this.blur = MITOSIS_MOTION_BLUR;
 
             for (let t = 0; t < this.numSpecies; t++) {
@@ -399,7 +399,7 @@ function Ecosystem() {
         //-----------------------------------------
         else if (e === ECO_RED_MENACE) {
             this.numSpecies = 12;
-            this.numParticles = 500;
+            this.numParticles = MAX_PARTICLES;
 
             for (let t = 0; t < this.numSpecies; t++) {
                 for (let f = 0; f < this.numSpecies; f++) {
@@ -459,7 +459,7 @@ function Ecosystem() {
         // Ships
         //-----------------------------------------
         else if (e === ECO_SHIPS) {
-            this.numParticles = 500;
+            this.numParticles = MAX_PARTICLES;
             this.numSpecies = 12;
 
             let redForce = -1.0;
@@ -561,7 +561,7 @@ function Ecosystem() {
         // Demo
         //-----------------------------------------
         else if (e === ECO_DEMO) {
-            this.numParticles = 500;
+            this.numParticles = MAX_PARTICLES;
             this.numSpecies = 6;
             this.initMode = INIT_MODE_FULL;
             this.diskSize = 200.0;
@@ -638,7 +638,7 @@ function Ecosystem() {
         // Demo
         //-----------------------------------------
         else if (e === ECO_DREAM) {
-            this.numParticles = 500;
+            this.numParticles = MAX_PARTICLES;
             this.numSpecies = 8;
             this.initMode = 2;
             this.diskSize = 50;
@@ -1731,7 +1731,7 @@ function Ecosystem() {
         //-----------------------------------------
         else if (e === ECO_POLLACK) {
             this.numSpecies = 12;
-            this.numParticles = 500;
+            this.numParticles = MAX_PARTICLES;
             this.blur = 1;
 
             for (let t = 0; t < this.numSpecies; t++) {
@@ -2156,7 +2156,7 @@ function Ecosystem() {
         // Simplify
         //-----------------------------------------
         else if (e === ECO_SIMPLIFY) {
-            this.numParticles = 500;
+            this.numParticles = MAX_PARTICLES;
             this.numSpecies = 3;
             this.initMode = INIT_MODE_FULL;
             this.diskSize = 400;
@@ -2306,7 +2306,7 @@ function Ecosystem() {
                 }
             }
 
-            this.numParticles = 500; //1516:11
+            this.numParticles = MAX_PARTICLES; //1516:11
             this.numSpecies = 2;//3; //1517:11
             this.initMode = 0; //1518:11
             this.diskSize = 40; //1519:11
@@ -2374,7 +2374,7 @@ function Ecosystem() {
         //-----------------------------------------
         else if (e === ECO_GEMS) {
             this.numSpecies = 12;
-            this.numParticles = 500;
+            this.numParticles = MAX_PARTICLES;
 
             for (let t = 0; t < this.numSpecies; t++) {
                 for (let f = 0; f < this.numSpecies; f++) {
@@ -2465,7 +2465,7 @@ function Ecosystem() {
         // Planets
         //-----------------------------------------
         else if (e === ECO_PLANETS) {
-            this.numParticles = 500;
+            this.numParticles = MAX_PARTICLES;
             this.numSpecies = 12;
 
 
@@ -2549,7 +2549,7 @@ function Ecosystem() {
 
 
             this.initMode = INIT_MODE_FULL;
-            this.numParticles = 500;
+            this.numParticles = MAX_PARTICLES;
             this.numSpecies = 12;
 
             this.species[0].socialForce[0] = -1.5508803074180229;
