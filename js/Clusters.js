@@ -20,6 +20,7 @@ var viewportHeight = canvasID.height;
 //----------------------
 function Clusters() {
     const MOUSE_RADIUS = 30.0;
+    const SAMPLE_RADIUS = 60.0;
     const MOTION_BLUR_SLIDER_RES = 100;
 
     //----------------------------------	
@@ -59,6 +60,9 @@ function Clusters() {
     let _ecosystem = new Ecosystem();
     let _forceEditor = new ForceEditor();
     let _mouseDown = false;
+    let _sampleOn = false; // key s used for setting sample radius
+    let _sampleX = 0;
+    let _sampleY = 0;
     let _frozen = false;
     let _mouseX = 0;
     let _mouseY = 0;
@@ -588,6 +592,22 @@ function Clusters() {
             canvas.clearRect(viewportWidth, 0, viewportWidth + 100, viewportHeight);
         }
 
+        //-------------------------------------        
+        // draw sample area     
+        //-------------------------------------
+        if (_sampleOn){
+
+            if (_mouseX < viewportWidth) {
+                canvas.lineWidth = 2;
+                canvas.strokeStyle = "rgb( 255, 255, 100 )";
+                canvas.beginPath();
+                canvas.arc(_sampleX, _sampleY, SAMPLE_RADIUS, 0, Math.PI * 2, false);
+                canvas.stroke();
+            }
+
+        }
+
+
         //------------------
         // GA
         //------------------
@@ -935,6 +955,13 @@ function Clusters() {
         _mouseY = y;
 
         _grabState = 0;
+    }
+    
+    //--------------------------------
+    this.sDown = function () {
+        _sampleOn = !_sampleOn;
+        _sampleX = _mouseX;
+        _sampleY = _mouseY;
     }
 
     //--------------------------
@@ -1432,8 +1459,11 @@ function Clusters() {
 
 //-------------------------------
 document.onkeydown = function (e) {
-    if (e.keyCode === 37) { clusters.arrowLeft(); }
-    if (e.keyCode === 39) { clusters.arrowRight(); }
+    //if (e.keyCode === 37) { clusters.arrowLeft(); }
+    //if (e.keyCode === 39) { clusters.arrowRight(); }
+    if (e.key === 's' || e.key === 'S') {
+        clusters.sDown();
+    }
 }
 
 //--------------------------------
