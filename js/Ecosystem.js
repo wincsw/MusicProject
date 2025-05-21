@@ -54,6 +54,7 @@ const MIN_ALPHA = 0.2;
 const MAX_ALPHA = 1.0;
 const DEFAULT_MOTION_BLUR = 0.9;
 const ALLIANCE_MOTION_BLUR = 0.97;
+const ALLIANCE_SPECIES = 12;
 const MITOSIS_MOTION_BLUR = 0.9;
 const DEFAULT_COLLISION_RADIUS = 8.64;
 
@@ -223,7 +224,7 @@ function Ecosystem() {
         // Alliances
         //-----------------------------------------
         else if (e === ECO_ALLIANCES) {
-            this.numSpecies = 12;
+            this.numSpecies = ALLIANCE_SPECIES;
             this.numParticles = MAX_PARTICLES;
             this.blur = ALLIANCE_MOTION_BLUR;
 
