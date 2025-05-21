@@ -55,6 +55,7 @@ function Clusters() {
     let _view = new View();
     //let _sensors		= new Array();
     let _grabSet = new Array();
+    let _sampleSet = new Array();
     let _grabState = 0;
     let _numGrabbed = 0;
     let _ecosystem = new Ecosystem();
@@ -136,7 +137,7 @@ function Clusters() {
 
         _GAGeneration = 0;
         _GAClock = 0;
-        _updateFreq = 1;
+        _updateFreq = 10;
         _startClock = 0;
 
         //-------------------
@@ -402,6 +403,37 @@ function Clusters() {
             }
         }
 
+        //-------------------------------------        
+        // monitor sample area     
+        //-------------------------------------
+        if (_sampleOn){
+            for (let i = 0; i < _ecosystem.numParticles; i++) {
+                let xx = _particles[i].position.x - _sampleX;
+                let yy = _particles[i].position.y - _sampleY;
+
+                let distance = Math.sqrt(xx * xx + yy * yy);
+                if (distance < SAMPLE_RADIUS) {                 // check if particle falls within area
+                    if (!_sampleSet.find(id => id === i)){      // ..and add it to sample set if not already in set
+                        _sampleSet.push(i);
+                        console.log("added", i);
+                        //console.log(_sampleSet);
+                    }
+                }
+            }
+
+            //--- check if any sampled particles have left the sample area
+            for (let i = 0; i < _sampleSet.length; i++) {
+                let xx = _particles[_sampleSet[i]].position.x - _sampleX;
+                let yy = _particles[_sampleSet[i]].position.y - _sampleY;
+
+                let distance = Math.sqrt(xx * xx + yy * yy);
+                if (distance > SAMPLE_RADIUS) {
+                    console.log("removed", _sampleSet[i])
+                    _sampleSet = _sampleSet.filter(id => !(id === _sampleSet[i]));
+                    //console.log(_sampleSet);
+                }
+            }
+        }
         //_view.update();      
 
         //---------------------------
