@@ -163,7 +163,7 @@ function Clusters() {
         obj = {
             Particles: _ecosystem.numParticles,
             Species: _ecosystem.numSpecies,
-            Trails: _ecosystem.blur,
+            //Trails: _ecosystem.blur,
             Ecosystem: 'Alliances',
             // ChangeColor: function () {
             //     _ecosystem.randomizeSpeciesColors();
@@ -196,12 +196,13 @@ function Clusters() {
             console.log(`New Particle Number: ${_ecosystem.numParticles}`);
         });
         particleSlider.listen(true);
-        // const speciesSlider = gui.add(obj, 'Species', MIN_SPECIES, MAX_SPECIES, 1);
-        // speciesSlider.onFinishChange(value => {
-        //     _ecosystem.numSpecies = value;
-        //     console.log(`New Species Number: ${_ecosystem.numSpecies}`);
-        // });
-        // speciesSlider.listen(true);
+        const speciesSlider = gui.add(obj, 'Species', MIN_SPECIES, MAX_SPECIES, 1);
+        speciesSlider.onFinishChange(value => {
+            //_ecosystem.numSpecies = value;
+            this.setNumSpecies( value );
+            console.log(`New Species Number: ${_ecosystem.numSpecies}`);
+        });
+        speciesSlider.listen(true);
 
 
         // gui.add(obj, 'Trails', 0, 1, 0.01).onFinishChange(value => {
