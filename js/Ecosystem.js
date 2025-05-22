@@ -646,7 +646,7 @@ function Ecosystem() {
             this.blur = 0.8;
             this.scale = 1;
 
-
+            this.initMode = INIT_MODE_EDGES;
 
 
             for (let s = 0; s < MAX_SPECIES; s++) {

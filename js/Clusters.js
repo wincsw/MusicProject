@@ -21,6 +21,7 @@ var viewportHeight = canvasID.height;
 function Clusters() {
     const MOUSE_RADIUS = 30.0;
     const SAMPLE_RADIUS = 60.0;
+    const GROUP_RADIUS = 25.0;
     const MOTION_BLUR_SLIDER_RES = 100;
 
     //----------------------------------	
@@ -74,6 +75,7 @@ function Clusters() {
     let _GAClock = 0;
     let _GAGeneration = 0;
     let _GACurrentEco = NULL_INDEX;
+    let _extendedPoint;
 
     //--------------------------------------
     // create the array of _particles
@@ -416,6 +418,7 @@ function Clusters() {
                     if (!_sampleSet.find(id => id === i)){      // ..and add it to sample set if not already in set
                         _sampleSet.push(i);
                         console.log("Particle", i, "entering at position", getSlice(_particles[i].position.x,_particles[i].position.y,_sampleX,_sampleY,SAMPLE_RADIUS));
+                        _extendedPoint = extendFromEntry(_sampleX, _sampleY, _particles[i].position.x, _particles[i].position.y, GROUP_RADIUS);
                         //console.log(_sampleSet);
                     }
                 }
@@ -634,6 +637,20 @@ function Clusters() {
                 canvas.strokeStyle = "rgb( 255, 255, 100 )";
                 canvas.beginPath();
                 canvas.arc(_sampleX, _sampleY, SAMPLE_RADIUS, 0, Math.PI * 2, false);
+                canvas.stroke();
+            }
+
+        }
+        //-------------------------------------        
+        // draw temp group search area     
+        //-------------------------------------
+        if (_sampleOn && _extendedPoint){
+
+            if (_mouseX < viewportWidth) {
+                canvas.lineWidth = 2;
+                canvas.strokeStyle = "rgb( 255, 0, 0 )";
+                canvas.beginPath();
+                canvas.arc(_extendedPoint.x, _extendedPoint.y, GROUP_RADIUS, 0, Math.PI * 2, false);
                 canvas.stroke();
             }
 

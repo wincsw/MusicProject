@@ -1,5 +1,5 @@
 //----------------------------------	
-// This function takes particle position and outputs which section/slice of the sampling circle it falls into
+// Takes particle position and outputs which section/slice of the sampling circle it falls into
 // slices are 1-12, starting at 3 o'clock position, counter clockwise. e.g. slice 3 is C major on music circle
 //----------------------------------
 function getSlice(particleX, particleY, sampleX, sampleY, sampleRadius) {
@@ -22,4 +22,27 @@ function getSlice(particleX, particleY, sampleX, sampleY, sampleRadius) {
   const sliceIndex = Math.floor(angle / sliceSize);
 
   return sliceIndex + 1; // Slices are 1-based (1 to 12)
+}
+
+//----------------------------------	
+// Takes particle entry point and calculates new x,y outside the sample area in the same line
+// of sample center and point entry - this will be the center to look for a group
+//----------------------------------
+function extendFromEntry(centerX, centerY, pointX, pointY, extensionDistance) {
+  // Calculate the direction vector from center to the point on the circle
+  const dx = pointX - centerX;
+  const dy = pointY - centerY;
+
+  // Calculate the current distance (radius)
+  const length = Math.sqrt(dx * dx + dy * dy);
+
+  // Normalize the direction vector
+  const unitX = dx / length;
+  const unitY = dy / length;
+
+  // Compute new extended point
+  const extendedX = centerX + (length + extensionDistance) * unitX;
+  const extendedY = centerY + (length + extensionDistance) * unitY;
+
+  return { x: extendedX, y: extendedY };
 }
