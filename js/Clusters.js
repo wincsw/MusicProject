@@ -415,7 +415,7 @@ function Clusters() {
                 if (distance < SAMPLE_RADIUS) {                 // check if particle falls within area
                     if (!_sampleSet.find(id => id === i)){      // ..and add it to sample set if not already in set
                         _sampleSet.push(i);
-                        console.log("added", i);
+                        console.log("Particle", i, "entering at position", getSlice(_particles[i].position.x,_particles[i].position.y,_sampleX,_sampleY,SAMPLE_RADIUS));
                         //console.log(_sampleSet);
                     }
                 }
@@ -428,7 +428,7 @@ function Clusters() {
 
                 let distance = Math.sqrt(xx * xx + yy * yy);
                 if (distance > SAMPLE_RADIUS) {
-                    console.log("removed", _sampleSet[i])
+                    console.log("Particle", _sampleSet[i], "leaving area")
                     _sampleSet = _sampleSet.filter(id => !(id === _sampleSet[i]));
                     //console.log(_sampleSet);
                 }
