@@ -46,3 +46,47 @@ function extendFromEntry(centerX, centerY, pointX, pointY, extensionDistance) {
 
   return { x: extendedX, y: extendedY };
 }
+
+//----------------------------------	
+// Creates group object with group stats
+//----------------------------------
+function createGroup(groupSet, particles, entryPos){
+
+    const speedLeader = particles[groupSet[0]].velocity.getMagnitude(); // get mangitude of the group leader
+    const species = mostFrequentSpeciesInSubset(particles,groupSet);
+    return {
+        leader: groupSet[0],
+        dominantSpecies: species,
+        size: groupSet.length,
+        speed: speedLeader,
+        entryPosition: entryPos
+    }
+
+}
+
+
+//----------------------------------	
+// For the group subset of particles, find the most common (most dominant species)
+//----------------------------------
+function mostFrequentSpeciesInSubset(particleData, indexes) {
+  const counts = [];
+
+  for (const i of indexes) {
+    const species = particleData[i]?.species;
+    if (Number.isInteger(species)) {
+      counts[species] = (counts[species] || 0) + 1;
+    }
+  }
+
+  let maxCount = 0;
+  let mostFrequent = null;
+
+  for (let i = 0; i < counts.length; i++) {
+    if (counts[i] > maxCount) {
+      maxCount = counts[i];
+      mostFrequent = i;
+    }
+  }
+
+  return mostFrequent;
+}
