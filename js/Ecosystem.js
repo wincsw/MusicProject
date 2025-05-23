@@ -233,11 +233,11 @@ function Ecosystem() {
             }
 
             this.species[0].setColor(255, 0, 0, 1.0); // red
-            this.species[1].setColor(255, 75, 0, 1.0);
+            this.species[1].setColor(255, 75, 0, 1.0); // dark orange
             this.species[2].setColor(255, 150, 0, 1.0); // orange
             this.species[3].setColor(255, 200, 0, 1.0);
             this.species[4].setColor(255, 255, 0, 1.0); // yellow
-            this.species[5].setColor(150, 255, 0, 1.0);
+            this.species[5].setColor(150, 255, 0, 1.0); // lime green
             this.species[6].setColor(0, 180, 0, 1.0); // green
             this.species[7].setColor(0, 200, 200, 1.0); // cyan
             this.species[8].setColor(80, 80, 255, 1.0); // blue

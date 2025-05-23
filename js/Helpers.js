@@ -54,12 +54,14 @@ function createGroup(groupSet, particles, entryPos){
 
     const speedLeader = particles[groupSet[0]].velocity.getMagnitude(); // get mangitude of the group leader
     const species = mostFrequentSpeciesInSubset(particles,groupSet);
+    const groupMembers = [...groupSet];
     return {
         leader: groupSet[0],
         dominantSpecies: species,
         size: groupSet.length,
         speed: speedLeader,
-        entryPosition: entryPos
+        entryPosition: entryPos,
+        members: groupMembers
     }
 
 }

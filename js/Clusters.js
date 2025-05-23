@@ -56,7 +56,7 @@ function Clusters() {
     //let _sensors		= new Array();
     let _grabSet = new Array();
     let _sampleSet = new Array();
-    let _groupsSet = new Array();
+    let _groups = new Array();
     let _grabState = 0;
     let _numGrabbed = 0;
     let _ecosystem = new Ecosystem();
@@ -414,12 +414,12 @@ function Clusters() {
                 let yy = _particles[i].position.y - _sampleY;
 
                 let distance = Math.sqrt(xx * xx + yy * yy);
-                if (distance < SAMPLE_RADIUS) {                 // check if particle falls within area
-                    if (!_sampleSet.find(id => id === i)){      // ..and add it to sample set if not already in set
-                        _sampleSet.push(i);
-                        const entryPosition = getSlice(_particles[i].position.x,_particles[i].position.y,_sampleX,_sampleY,SAMPLE_RADIUS);
-                        console.log("Particle", i, "entering at position", entryPosition);
-                        _extendedPoint = extendFromEntry(_sampleX, _sampleY, _particles[i].position.x, _particles[i].position.y, GROUP_RADIUS);
+                if ((distance < SAMPLE_RADIUS) && !_sampleSet.find(id => id === i)) {  // check if particle falls within sample area and is not already in area (sampleset)
+                    _sampleSet.push(i);
+                    const entryPosition = getSlice(_particles[i].position.x,_particles[i].position.y,_sampleX,_sampleY,SAMPLE_RADIUS);
+                    console.log("Particle", i, "entering at position", entryPosition);
+                    if (!_groups.some(g => g.members.includes(i))){  // check if particle is not already a group member
+                        _extendedPoint = extendFromEntry(_sampleX, _sampleY, _particles[i].position.x, _particles[i].position.y, GROUP_RADIUS-5);
                         //--- check if there is a group around the extended point
                         let groupSet = new Array();
                         groupSet.push(i); // add leader to the group
@@ -428,22 +428,23 @@ function Clusters() {
                             let dy = _particles[j].position.y - _extendedPoint.y;
 
                             let distance = Math.sqrt(dx * dx + dy * dy);
-                            if ((distance < GROUP_RADIUS) && !groupSet.find(id => id === j)) {
+                            // if particle is within group radius view and not already in groupSet and not in another group...
+                            if ((distance < GROUP_RADIUS) && !groupSet.find(id => id === j) && !_groups.some(g => g.members.includes(j))) {
                                 groupSet.push(j);
                             }
                         }
-                        if (groupSet.length > 2){
+                        if (groupSet.length > 2){ // group has to be 3 or more to be a group
                             // create group
                             console.log("leader", i, "group", groupSet);
-                            _groupsSet.push(createGroup(groupSet, _particles, entryPosition)); // add created group to the groups array
-                            console.log("groups add", _groupsSet);
+                            _groups.push(createGroup(groupSet, _particles, entryPosition)); // add created group to the groups array
+                            console.log("groups add", _groups);
                         }
                         //console.log(_sampleSet);
                         //console.log(_particles[i]);
+                        }
+
                     }
                 }
-            }
-
 
             //--- check if any sampled particles have left the sample area
             for (let i = 0; i < _sampleSet.length; i++) {
@@ -453,9 +454,9 @@ function Clusters() {
                 let distance = Math.sqrt(xx * xx + yy * yy);
                 if (distance > SAMPLE_RADIUS) {
                     console.log("Particle", _sampleSet[i], "leaving area")
+                    _groups = _groups.filter(id => !(id.leader === _sampleSet[i])); //remove group from groups if leaving particle is a group leader
                     _sampleSet = _sampleSet.filter(id => !(id === _sampleSet[i])); //remove particle index from set
-                    _groupsSet = _groupsSet.filter(id => !(id.leader === _sampleSet[i])); //remove group from groups if leaving particle is group leader
-                    console.log("groups rem", _groupsSet);
+                    console.log("groups rem", _groups);
                 }
             }
         }
