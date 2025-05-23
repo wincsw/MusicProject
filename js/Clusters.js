@@ -21,6 +21,7 @@ var viewportHeight = canvasID.height;
 function Clusters() {
     const MOUSE_RADIUS = 30.0;
     const SAMPLE_RADIUS = 60.0;
+    const GROUP_RADIUS = 25.0;
     const MOTION_BLUR_SLIDER_RES = 100;
 
     //----------------------------------	
@@ -47,7 +48,6 @@ function Clusters() {
         this.id = NULL_INDEX;
     }
 
-
     //------------------------------------------------
     // local variables
     //------------------------------------------------	
@@ -56,6 +56,7 @@ function Clusters() {
     //let _sensors		= new Array();
     let _grabSet = new Array();
     let _sampleSet = new Array();
+    let _groups = new Array();
     let _grabState = 0;
     let _numGrabbed = 0;
     let _ecosystem = new Ecosystem();
@@ -74,6 +75,7 @@ function Clusters() {
     let _GAClock = 0;
     let _GAGeneration = 0;
     let _GACurrentEco = NULL_INDEX;
+    let _extendedPoint;
 
     //--------------------------------------
     // create the array of _particles
@@ -412,11 +414,31 @@ function Clusters() {
                 let yy = _particles[i].position.y - _sampleY;
 
                 let distance = Math.sqrt(xx * xx + yy * yy);
-                if (distance < SAMPLE_RADIUS) {                 // check if particle falls within area
-                    if (!_sampleSet.find(id => id === i)){      // ..and add it to sample set if not already in set
-                        _sampleSet.push(i);
-                        console.log("Particle", i, "entering at position", getSlice(_particles[i].position.x,_particles[i].position.y,_sampleX,_sampleY,SAMPLE_RADIUS));
-                        //console.log(_sampleSet);
+                if ((distance < SAMPLE_RADIUS) && !_sampleSet.find(id => id === i)) {  // check if particle falls within sample area and is not already in area (sampleset)
+                    _sampleSet.push(i);
+                    const entryPosition = getSlice(_particles[i].position.x,_particles[i].position.y,_sampleX,_sampleY,SAMPLE_RADIUS);
+                    console.log("Particle", i, "entering at position", entryPosition);
+                    if (!_groups.some(g => g.members.includes(i))){  // check if particle is not already a group member
+                        _extendedPoint = extendFromEntry(_sampleX, _sampleY, _particles[i].position.x, _particles[i].position.y, GROUP_RADIUS-5);
+                        //--- check if there is a group around the extended point
+                        let groupSet = new Array();
+                        groupSet.push(i); // add leader to the group
+                        for (let j = 0; j < _ecosystem.numParticles; j++) {
+                            let dx = _particles[j].position.x - _extendedPoint.x;
+                            let dy = _particles[j].position.y - _extendedPoint.y;
+
+                            let distance = Math.sqrt(dx * dx + dy * dy);
+                            // if particle is within group radius view and not already in groupSet and not in another group...
+                            if ((distance < GROUP_RADIUS) && !groupSet.find(id => id === j) && !_groups.some(g => g.members.includes(j))) {
+                                groupSet.push(j);
+                            }
+                        }
+                        if (groupSet.length > 2){ // group has to be 3 or more to be a group
+                            // create group
+                            console.log("leader", i, "group", groupSet);
+                            _groups.push(createGroup(groupSet, _particles, entryPosition)); // add created group to the groups array
+                            console.log("groups add", _groups);
+                        }
                     }
                 }
             }
@@ -429,8 +451,12 @@ function Clusters() {
                 let distance = Math.sqrt(xx * xx + yy * yy);
                 if (distance > SAMPLE_RADIUS) {
                     console.log("Particle", _sampleSet[i], "leaving area")
-                    _sampleSet = _sampleSet.filter(id => !(id === _sampleSet[i]));
-                    //console.log(_sampleSet);
+                    if (_groups.find(id => (id.leader === _sampleSet[i]))){ //remove group from groups if leaving particle is a group leader
+                        reportGroupLeaving(_groups, _sampleSet[i]); 
+                        _groups = _groups.filter(id => !(id.leader === _sampleSet[i]));
+                        console.log("groups rem", _groups);
+                    }
+                    _sampleSet = _sampleSet.filter(id => !(id === _sampleSet[i])); //remove particle index from set
                 }
             }
         }
@@ -634,6 +660,20 @@ function Clusters() {
                 canvas.strokeStyle = "rgb( 255, 255, 100 )";
                 canvas.beginPath();
                 canvas.arc(_sampleX, _sampleY, SAMPLE_RADIUS, 0, Math.PI * 2, false);
+                canvas.stroke();
+            }
+
+        }
+        //-------------------------------------        
+        // draw temp group search area     
+        //-------------------------------------
+        if (_sampleOn && _extendedPoint){
+
+            if (_mouseX < viewportWidth) {
+                canvas.lineWidth = 2;
+                canvas.strokeStyle = "rgb( 255, 0, 0 )";
+                canvas.beginPath();
+                canvas.arc(_extendedPoint.x, _extendedPoint.y, GROUP_RADIUS, 0, Math.PI * 2, false);
                 canvas.stroke();
             }
 

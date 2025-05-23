@@ -233,13 +233,13 @@ function Ecosystem() {
             }
 
             this.species[0].setColor(255, 0, 0, 1.0); // red
-            this.species[1].setColor(255, 75, 0, 1.0);
+            this.species[1].setColor(255, 75, 0, 1.0); // dark orange
             this.species[2].setColor(255, 150, 0, 1.0); // orange
             this.species[3].setColor(255, 200, 0, 1.0);
             this.species[4].setColor(255, 255, 0, 1.0); // yellow
-            this.species[5].setColor(150, 255, 0, 1.0);
+            this.species[5].setColor(150, 255, 0, 1.0); // lime green
             this.species[6].setColor(0, 180, 0, 1.0); // green
-            this.species[7].setColor(0, 200, 200, 1.0);
+            this.species[7].setColor(0, 200, 200, 1.0); // cyan
             this.species[8].setColor(80, 80, 255, 1.0); // blue
             this.species[9].setColor(60, 0, 255, 1.0);
             this.species[10].setColor(160, 20, 255, 1.0); // violet
@@ -646,7 +646,7 @@ function Ecosystem() {
             this.blur = 0.8;
             this.scale = 1;
 
-
+            this.initMode = INIT_MODE_EDGES;
 
 
             for (let s = 0; s < MAX_SPECIES; s++) {

@@ -1,5 +1,5 @@
 //----------------------------------	
-// This function takes particle position and outputs which section/slice of the sampling circle it falls into
+// Takes particle position and outputs which section/slice of the sampling circle it falls into
 // slices are 1-12, starting at 3 o'clock position, counter clockwise. e.g. slice 3 is C major on music circle
 //----------------------------------
 function getSlice(particleX, particleY, sampleX, sampleY, sampleRadius) {
@@ -22,4 +22,80 @@ function getSlice(particleX, particleY, sampleX, sampleY, sampleRadius) {
   const sliceIndex = Math.floor(angle / sliceSize);
 
   return sliceIndex + 1; // Slices are 1-based (1 to 12)
+}
+
+//----------------------------------	
+// Takes particle entry point and calculates new x,y outside the sample area in the same line
+// of sample center and point entry - this will be the center to look for a group
+//----------------------------------
+function extendFromEntry(centerX, centerY, pointX, pointY, extensionDistance) {
+  // Calculate the direction vector from center to the point on the circle
+  const dx = pointX - centerX;
+  const dy = pointY - centerY;
+
+  // Calculate the current distance (radius)
+  const length = Math.sqrt(dx * dx + dy * dy);
+
+  // Normalize the direction vector
+  const unitX = dx / length;
+  const unitY = dy / length;
+
+  // Compute new extended point
+  const extendedX = centerX + (length + extensionDistance) * unitX;
+  const extendedY = centerY + (length + extensionDistance) * unitY;
+
+  return { x: extendedX, y: extendedY };
+}
+
+//----------------------------------	
+// Creates group object with group stats and sends it for midi messaging
+//----------------------------------
+function createGroup(groupSet, particles, entryPos){
+
+    const speedLeader = particles[groupSet[0]].velocity.getMagnitude(); // get mangitude of the group leader
+    const species = mostFrequentSpeciesInSubset(particles,groupSet);
+    const groupMembers = [...groupSet];
+    const groupObj = {
+        leader: groupSet[0],
+        dominantSpecies: species,
+        size: groupSet.length,
+        speed: speedLeader,
+        entryPosition: entryPos,
+        members: groupMembers
+    }
+    return groupObj;
+}
+
+//----------------------------------	
+// Reports leaving group object for sending (reverse?) midi messaging
+//----------------------------------
+function reportGroupLeaving(groups, groupleader){
+    const groupObj = groups.find(id => (id.leader === groupleader));
+    console.log("group leaving is...", groupObj);
+}
+
+//----------------------------------	
+// For the group subset of particles, find the most common (most dominant species)
+//----------------------------------
+function mostFrequentSpeciesInSubset(particleData, indexes) {
+  const counts = [];
+
+  for (const i of indexes) {
+    const species = particleData[i]?.species;
+    if (Number.isInteger(species)) {
+      counts[species] = (counts[species] || 0) + 1;
+    }
+  }
+
+  let maxCount = 0;
+  let mostFrequent = null;
+
+  for (let i = 0; i < counts.length; i++) {
+    if (counts[i] > maxCount) {
+      maxCount = counts[i];
+      mostFrequent = i;
+    }
+  }
+
+  return mostFrequent;
 }
