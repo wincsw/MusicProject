@@ -63,6 +63,7 @@ function createGroup(groupSet, particles, entryPos){
         entryPosition: entryPos,
         members: groupMembers
     }
+    // call midi mapping function here with object data
     return groupObj;
 }
 
@@ -72,6 +73,7 @@ function createGroup(groupSet, particles, entryPos){
 function reportGroupLeaving(groups, groupleader){
     const groupObj = groups.find(id => (id.leader === groupleader));
     console.log("group leaving is...", groupObj);
+    // call midi mapping function here with object data
 }
 
 //----------------------------------	
