@@ -48,14 +48,14 @@ function extendFromEntry(centerX, centerY, pointX, pointY, extensionDistance) {
 }
 
 //----------------------------------	
-// Creates group object with group stats
+// Creates group object with group stats and sends it for midi messaging
 //----------------------------------
 function createGroup(groupSet, particles, entryPos){
 
     const speedLeader = particles[groupSet[0]].velocity.getMagnitude(); // get mangitude of the group leader
     const species = mostFrequentSpeciesInSubset(particles,groupSet);
     const groupMembers = [...groupSet];
-    return {
+    const groupObj = {
         leader: groupSet[0],
         dominantSpecies: species,
         size: groupSet.length,
@@ -63,9 +63,16 @@ function createGroup(groupSet, particles, entryPos){
         entryPosition: entryPos,
         members: groupMembers
     }
-
+    return groupObj;
 }
 
+//----------------------------------	
+// Reports leaving group object for sending (reverse?) midi messaging
+//----------------------------------
+function reportGroupLeaving(groups, groupleader){
+    const groupObj = groups.find(id => (id.leader === groupleader));
+    console.log("group leaving is...", groupObj);
+}
 
 //----------------------------------	
 // For the group subset of particles, find the most common (most dominant species)

@@ -439,12 +439,9 @@ function Clusters() {
                             _groups.push(createGroup(groupSet, _particles, entryPosition)); // add created group to the groups array
                             console.log("groups add", _groups);
                         }
-                        //console.log(_sampleSet);
-                        //console.log(_particles[i]);
-                        }
-
                     }
                 }
+            }
 
             //--- check if any sampled particles have left the sample area
             for (let i = 0; i < _sampleSet.length; i++) {
@@ -454,9 +451,12 @@ function Clusters() {
                 let distance = Math.sqrt(xx * xx + yy * yy);
                 if (distance > SAMPLE_RADIUS) {
                     console.log("Particle", _sampleSet[i], "leaving area")
-                    _groups = _groups.filter(id => !(id.leader === _sampleSet[i])); //remove group from groups if leaving particle is a group leader
+                    if (_groups.find(id => (id.leader === _sampleSet[i]))){ //remove group from groups if leaving particle is a group leader
+                        reportGroupLeaving(_groups, _sampleSet[i]); 
+                        _groups = _groups.filter(id => !(id.leader === _sampleSet[i]));
+                        console.log("groups rem", _groups);
+                    }
                     _sampleSet = _sampleSet.filter(id => !(id === _sampleSet[i])); //remove particle index from set
-                    console.log("groups rem", _groups);
                 }
             }
         }
