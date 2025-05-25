@@ -20,9 +20,14 @@ var viewportHeight = canvasID.height;
 //----------------------
 function Clusters() {
     const MOUSE_RADIUS = 30.0;
-    const SAMPLE_RADIUS = 60.0;
-    const GROUP_RADIUS = 25.0;
     const MOTION_BLUR_SLIDER_RES = 100;
+
+    //----------------------------------
+    // sampling area
+    //----------------------------------
+    const SAMPLE_RADIUS = 60.0; // radius for sampling circle
+    const GROUP_RADIUS = 25.0; /// radius for considering particles as a group
+    const MIN_GROUP_PARTICLES = 3; // min numnber of particles to be consider as a group
 
     //----------------------------------	
     // genetics
@@ -76,6 +81,7 @@ function Clusters() {
     let _GAGeneration = 0;
     let _GACurrentEco = NULL_INDEX;
     let _extendedPoint;
+    let _extendedPointExit;
 
     //--------------------------------------
     // create the array of _particles
@@ -206,7 +212,7 @@ function Clusters() {
         const speciesSlider = gui.add(obj, 'Species', MIN_SPECIES, MAX_SPECIES, 1);
         speciesSlider.onFinishChange(value => {
             //_ecosystem.numSpecies = value;
-            this.setNumSpecies( value );
+            this.setNumSpecies(value);
             console.log(`New Species Number: ${_ecosystem.numSpecies}`);
         });
         speciesSlider.listen(true);
@@ -408,7 +414,7 @@ function Clusters() {
         //-------------------------------------        
         // monitor sample area     
         //-------------------------------------
-        if (_sampleOn){
+        if (_sampleOn) {
             for (let i = 0; i < _ecosystem.numParticles; i++) {
                 let xx = _particles[i].position.x - _sampleX;
                 let yy = _particles[i].position.y - _sampleY;
@@ -416,10 +422,10 @@ function Clusters() {
                 let distance = Math.sqrt(xx * xx + yy * yy);
                 if ((distance < SAMPLE_RADIUS) && !_sampleSet.find(id => id === i)) {  // check if particle falls within sample area and is not already in area (sampleset)
                     _sampleSet.push(i);
-                    const entryPosition = getSlice(_particles[i].position.x,_particles[i].position.y,_sampleX,_sampleY,SAMPLE_RADIUS);
-                    console.log("Particle", i, "entering at position", entryPosition);
-                    if (!_groups.some(g => g.members.includes(i))){  // check if particle is not already a group member
-                        _extendedPoint = extendFromEntry(_sampleX, _sampleY, _particles[i].position.x, _particles[i].position.y, GROUP_RADIUS-5);
+                    const entryPosition = getSlice(_particles[i].position.x, _particles[i].position.y, _sampleX, _sampleY, SAMPLE_RADIUS);
+                    // console.log("Particle", i, "entering at position", entryPosition);
+                    if (!_groups.some(g => g.members.includes(i))) {  // check if particle is not already a group member
+                        _extendedPoint = extendFromEntry(_sampleX, _sampleY, _particles[i].position.x, _particles[i].position.y, GROUP_RADIUS - 5);
                         //--- check if there is a group around the extended point
                         let groupSet = new Array();
                         groupSet.push(i); // add leader to the group
@@ -433,7 +439,7 @@ function Clusters() {
                                 groupSet.push(j);
                             }
                         }
-                        if (groupSet.length > 2){ // group has to be 3 or more to be a group
+                        if (groupSet.length >= MIN_GROUP_PARTICLES) { // group has to be 3 or more to be a group
                             // create group
                             console.log("leader", i, "group", groupSet);
                             _groups.push(createGroup(groupSet, _particles, entryPosition)); // add created group to the groups array
@@ -449,14 +455,20 @@ function Clusters() {
                 let yy = _particles[_sampleSet[i]].position.y - _sampleY;
 
                 let distance = Math.sqrt(xx * xx + yy * yy);
-                if (distance > SAMPLE_RADIUS) {
-                    console.log("Particle", _sampleSet[i], "leaving area")
-                    if (_groups.find(id => (id.leader === _sampleSet[i]))){ //remove group from groups if leaving particle is a group leader
-                        reportGroupLeaving(_groups, _sampleSet[i]); 
+                if (distance >= SAMPLE_RADIUS) {
+                    const exitPosition = getSlice(_particles[_sampleSet[i]].position.x, _particles[_sampleSet[i]].position.y, _sampleX, _sampleY, SAMPLE_RADIUS);
+                    // console.log("Particle", _sampleSet[i], "leaving area at position ", exitPosition)
+                    if (_groups.find(id => (id.leader === _sampleSet[i]))) { //remove group from groups if leaving particle is a group leader
+
+                        _extendedPointExit = extendFromEntry(_sampleX, _sampleY, _particles[_sampleSet[i]].position.x, _particles[_sampleSet[i]].position.y, GROUP_RADIUS - 5);
+                        reportGroupLeaving(_groups, _sampleSet[i], exitPosition);
                         _groups = _groups.filter(id => !(id.leader === _sampleSet[i]));
+
                         console.log("groups rem", _groups);
                     }
+
                     _sampleSet = _sampleSet.filter(id => !(id === _sampleSet[i])); //remove particle index from set
+
                 }
             }
         }
@@ -653,7 +665,7 @@ function Clusters() {
         //-------------------------------------        
         // draw sample area     
         //-------------------------------------
-        if (_sampleOn){
+        if (_sampleOn) {
 
             if (_mouseX < viewportWidth) {
                 canvas.lineWidth = 2;
@@ -665,15 +677,30 @@ function Clusters() {
 
         }
         //-------------------------------------        
-        // draw temp group search area     
+        // draw temp group search area (entering sample area)    
         //-------------------------------------
-        if (_sampleOn && _extendedPoint){
+        if (_sampleOn && _extendedPoint) {
+
+            if (_mouseX < viewportWidth) {
+                canvas.lineWidth = 2;
+                canvas.strokeStyle = "rgb( 0, 255, 0 )";
+                canvas.beginPath();
+                canvas.arc(_extendedPoint.x, _extendedPoint.y, GROUP_RADIUS, 0, Math.PI * 2, false);
+                canvas.stroke();
+            }
+
+        }
+
+        //-------------------------------------        
+        // draw temp group search area (exiting sample area)    
+        //-------------------------------------
+        if (_sampleOn && _extendedPointExit) {
 
             if (_mouseX < viewportWidth) {
                 canvas.lineWidth = 2;
                 canvas.strokeStyle = "rgb( 255, 0, 0 )";
                 canvas.beginPath();
-                canvas.arc(_extendedPoint.x, _extendedPoint.y, GROUP_RADIUS, 0, Math.PI * 2, false);
+                canvas.arc(_extendedPointExit.x, _extendedPointExit.y, GROUP_RADIUS, 0, Math.PI * 2, false);
                 canvas.stroke();
             }
 
@@ -1028,7 +1055,7 @@ function Clusters() {
 
         _grabState = 0;
     }
-    
+
     //--------------------------------
     this.sDown = function () {
         _sampleOn = !_sampleOn;
