@@ -40,7 +40,7 @@ const NUM_INIT_MODES = 9;
 // limits and defaults
 //--------------------------------------
 const MIN_PARTICLES = 1;
-const MAX_PARTICLES = 1000;
+const MAX_PARTICLES = 2000;
 const MIN_SPECIES = 1;
 const MAX_SPECIES = 12;
 const MIN_COLLISION_FORCE = 0.0;
@@ -225,7 +225,7 @@ function Ecosystem() {
         //-----------------------------------------
         else if (e === ECO_ALLIANCES) {
             this.numSpecies = ALLIANCE_SPECIES;
-            this.numParticles = MAX_PARTICLES;
+            this.numParticles = MAX_PARTICLES / 2;
             this.blur = ALLIANCE_MOTION_BLUR;
 
             for (let t = 0; t < this.numSpecies; t++) {
