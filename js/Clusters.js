@@ -200,8 +200,8 @@ function Clusters() {
             },
             Zap: function () {
                 for (let i = 0; i < MAX_PARTICLES; i++) {
-                    let x = -40.0 * ONE_HALF + Math.random() * 40.0;
-                    let y = -40.0 * ONE_HALF + Math.random() * 40.0;
+                    let x = -100.0 * ONE_HALF + Math.random() * 100.0;
+                    let y = -100.0 * ONE_HALF + Math.random() * 100.0;
 
                     _particles[i].velocity.setXY(x, y);
                 }
