@@ -40,7 +40,7 @@ const NUM_INIT_MODES = 9;
 // limits and defaults
 //--------------------------------------
 const MIN_PARTICLES = 1;
-const MAX_PARTICLES = 1000;
+const MAX_PARTICLES = 2000;
 const MIN_SPECIES = 1;
 const MAX_SPECIES = 12;
 const MIN_COLLISION_FORCE = 0.0;
@@ -54,7 +54,7 @@ const MIN_ALPHA = 0.2;
 const MAX_ALPHA = 1.0;
 const DEFAULT_MOTION_BLUR = 0.9;
 const ALLIANCE_MOTION_BLUR = 0.97;
-const ALLIANCE_SPECIES = 12;
+const ALLIANCE_SPECIES = 6;
 const MITOSIS_MOTION_BLUR = 0.9;
 const DEFAULT_COLLISION_RADIUS = 8.64;
 
@@ -225,25 +225,33 @@ function Ecosystem() {
         //-----------------------------------------
         else if (e === ECO_ALLIANCES) {
             this.numSpecies = ALLIANCE_SPECIES;
-            this.numParticles = MAX_PARTICLES;
+            this.numParticles = MAX_PARTICLES / 2;
             this.blur = ALLIANCE_MOTION_BLUR;
 
             for (let t = 0; t < this.numSpecies; t++) {
                 this.species[t].setColor(100, 100, 100, 1.0);
             }
 
+            // this.species[0].setColor(255, 0, 0, 1.0); // red
+            // this.species[1].setColor(255, 75, 0, 1.0); // dark orange
+            // this.species[2].setColor(255, 150, 0, 1.0); // orange
+            // this.species[3].setColor(255, 200, 0, 1.0);
+            // this.species[4].setColor(255, 255, 0, 1.0); // yellow
+            // this.species[5].setColor(150, 255, 0, 1.0); // lime green
+            // this.species[6].setColor(0, 180, 0, 1.0); // green
+            // this.species[7].setColor(0, 200, 200, 1.0); // cyan
+            // this.species[8].setColor(80, 80, 255, 1.0); // blue
+            // this.species[9].setColor(60, 0, 255, 1.0);
+            // this.species[10].setColor(160, 20, 255, 1.0); // violet
+            // this.species[11].setColor(150, 0, 150, 1.0);
+
             this.species[0].setColor(255, 0, 0, 1.0); // red
-            this.species[1].setColor(255, 75, 0, 1.0); // dark orange
-            this.species[2].setColor(255, 150, 0, 1.0); // orange
-            this.species[3].setColor(255, 200, 0, 1.0);
-            this.species[4].setColor(255, 255, 0, 1.0); // yellow
-            this.species[5].setColor(150, 255, 0, 1.0); // lime green
-            this.species[6].setColor(0, 180, 0, 1.0); // green
-            this.species[7].setColor(0, 200, 200, 1.0); // cyan
-            this.species[8].setColor(80, 80, 255, 1.0); // blue
-            this.species[9].setColor(60, 0, 255, 1.0);
-            this.species[10].setColor(160, 20, 255, 1.0); // violet
-            this.species[11].setColor(150, 0, 150, 1.0);
+            this.species[1].setColor(255, 150, 0, 1.0); // orange
+            this.species[2].setColor(255, 255, 0, 1.0); // yellow
+            this.species[3].setColor(0, 180, 0, 1.0); // green
+            this.species[4].setColor(80, 80, 255, 1.0); // blue
+            this.species[5].setColor(150, 0, 150, 1.0); // purple
+
 
 
             for (let t = 0; t < this.numSpecies; t++) {
