@@ -2,7 +2,7 @@ let selectedOutput = null;
 let selectedInput = null;
 const _midiScale = [0, 127];
 const _avgGpSizeRange = [3, 15];
-const _avgSpeedRange = [0, 3];
+const _avgSpeedRange = [0, 6];
 const _entryPosRange = [1, 12];
 
 WebMidi.enable()
@@ -85,22 +85,22 @@ function sendToMidi(groupObj, exiting) {
         exitPosition: ${groupObj.exitPosition},
         members: ${groupObj.members}`);
 
+    // only trigger during entry 
+    if (exiting) {
+        return;
+    }
     // all channel and ccnumber here are dummy
     let channel = null;
     let ccNumber = null;
     switch (groupObj.dominantSpecies) {
         // pitch 
         case 0:
-            // NOTE: trigger only went note is entering?
-            if (exiting) {
-                break;
-            }
             // note
-            let entryToNote = Math.round(MapValue(groupObj.entryPosition, _entryPosRange, _midiScale));
+            let entryToNote = MapValue(groupObj.entryPosition, _entryPosRange, _midiScale);
             SendNote(entryToNote, channel);
 
             // chord partials
-            let sizeToChord = Math.round(MapValue(groupObj.size, _avgGpSizeRange, _midiScale));
+            let sizeToChord = MapValue(groupObj.size, _avgGpSizeRange, _midiScale);
             SendCC(ccNumber, sizeToChord, channel);
 
             break;
@@ -117,7 +117,7 @@ function sendToMidi(groupObj, exiting) {
 
         // lead stab sequences
         case 3:
-            let sizeToSteps_stab = Math.round(MapValue(groupObj.size, _avgGpSizeRange, _midiScale));
+            let sizeToSteps_stab = MapValue(groupObj.size, _avgGpSizeRange, _midiScale);
             SendCC(ccNumber, sizeToSteps_stab, channel);
             break;
 
@@ -129,10 +129,9 @@ function sendToMidi(groupObj, exiting) {
 
         // volumn toggle for pluck, stab, basss
         case 5:
-            let volueRange = (0, 100); // not sure
-            let speedToVol = MapValue(groupObj.speed, _avgSpeedRange, volueRange);
-            let channels = [3, 5, 7];
-            let entryToChannel = Math.round(MapValue(groupObj.entryPosition, _entryPosRange, [0, 2]));
+            let speedToVol = MapValue(groupObj.speed, _avgSpeedRange, _midiScale);
+            let channels = [3, 5, 7]; // dummy
+            let entryToChannel = MapValue(groupObj.entryPosition, _entryPosRange, [0, 2]);
 
             SendCC(ccNumber, speedToVol, channels[entryToChannel]);
     }
@@ -141,14 +140,15 @@ function sendToMidi(groupObj, exiting) {
 // -- map value from old range to new range --
 function MapValue(value, oldRange, newRange) {
     let ratio = (newRange[1] - newRange[0]) / (oldRange[1] - oldRange[0]);
-    let mappedValue = ratio * (value - oldRange[0]) + newRange[0];
+    let mappedValue = Math.round(ratio * (value - oldRange[0]) + newRange[0]);
+
     console.log(`Map ${value} from ${oldRange[0]} - ${oldRange[1]} to ${newRange[0]} - ${newRange[1]} (ratio of ${ratio}) = ${mappedValue}`);
+
     return (mappedValue);
 }
 
 // -- modifier for the LFO of water pluck and lead stab
 function LFOMode(speed, groupSize, ccNumber, channel) {
-    // NOTE: do we need to round the value to integer?
 
     // LFO speed/frequency 
     let speedTofreq = MapValue(speed, _avgSpeedRange, _midiScale);
@@ -156,38 +156,36 @@ function LFOMode(speed, groupSize, ccNumber, channel) {
 
     // depth
     let sizeToDepth = MapValue(groupSize, _avgGpSizeRange, _midiScale);
-    // NOTE: not sure if this is mapped to the midi scale
     SendCC(ccNumber, sizeToDepth, channel);
 
 }
 
 // === Outgoing note ===
 function SendNote(note, channel) {
-    // if (!selectedOutput) { // dummy output and assign later depend what it is call on the final computer 
-    //     alert("No output selected!");
-    //     return;
-    // }
+    if (!selectedOutput) { // dummy output and assign later depend what it is call on the final computer 
+        alert("No output selected!");
+        return;
+    }
 
-    // const velocity = 0.9;
-    // const duration = 50;
+    const velocity = 0.9;
+    const duration = 50;
 
-    // selectedOutput.playNote(note, channel, { velocity });
-    // setTimeout(() => {
-    //     selectedOutput.stopNote(note, channel);
-    // }, duration);
+    selectedOutput.playNote(note, channel, { velocity });
+    setTimeout(() => {
+        selectedOutput.stopNote(note, channel);
+    }, duration);
 
     console.log(`Sent ${note} to channel ${channel}`);
 };
 
 // === Outgoing CC ===
 function SendCC(ccNumber, value, channel) {
-    // if (!selectedOutput) {
-    //     alert("No output selected!");
-    //     return;
-    // }
+    if (!selectedOutput) {
+        alert("No output selected!");
+        return;
+    }
 
-    // selectedOutput.sendControlChange(ccNumber, value, channel);
-    // ccNumber: id of the cc message
+    selectedOutput.sendControlChange(ccNumber, value, channel);
 
     console.log(`Sent CC ${ccNumber} = ${value} to channel ${channel}`);
 };
