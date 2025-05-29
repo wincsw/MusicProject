@@ -9,7 +9,21 @@ WebMidi.enable()
     .then(onEnabled)
     .catch(err => alert("MIDI could not be enabled: " + err));
 
+
 function onEnabled() {
+
+    if (WebMidi.outputs.length < 1) {
+    outputsDiv.innerHTML = "No MIDI output devices detected.";
+  } else {
+
+    console.log(WebMidi.outputs[1]);
+    selectedOutput = WebMidi.outputs[0];
+
+
+    if (!selectedOutput) { // dummy output and assign later depend what it is call on the final computer 
+        alert("No output selected!");
+        return;
+    }}
     // const outputsDiv = document.getElementById("outputs");
     // const inputsDiv = document.getElementById("inputs");
 
@@ -96,44 +110,57 @@ function sendToMidi(groupObj, exiting) {
         // pitch 
         case 0:
             // note
-            let entryToNote = MapValue(groupObj.entryPosition, _entryPosRange, _midiScale);
-            SendNote(entryToNote, channel);
+            let entryToNote = MapValue(groupObj.entryPosition, _entryPosRange, [24,36]);
+            SendNote(entryToNote, 1);
 
             // chord partials
             let sizeToChord = MapValue(groupObj.size, _avgGpSizeRange, _midiScale);
-            SendCC(ccNumber, sizeToChord, channel);
+            SendCC(120, sizeToChord, 1);
 
             break;
 
         // water pluck LFO
         case 1:
-            LFOMode(groupObj.speed, groupObj.size, ccNumber, channel);
+            // LFO speed/frequency 
+            let speedTofreq_pluck = MapValue(groupObj.speed, _avgSpeedRange, _midiScale);
+            SendCC(120, speedTofreq_pluck, 2);
+
+            // depth
+            let sizeToDepth_pluck = MapValue(groupObj.size, _avgGpSizeRange, _midiScale);
+            SendCC(121, sizeToDepth_pluck, 2);
             break;
 
         // lead stab LFO 
         case 2:
-            LFOMode(groupObj.speed, groupObj.size, ccNumber, channel);
+                // LFO speed/frequency 
+            let speedTofreq_stab = MapValue(groupObj.speed, _avgSpeedRange, _midiScale);
+            SendCC(120, speedTofreq_stab, 3);
+
+            // depth
+            let sizeToDepth_stab = MapValue(groupObj.size, _avgGpSizeRange, _midiScale);
+            SendCC(121, sizeToDepth_stab, 3);
             break;
+
 
         // lead stab sequences
         case 3:
             let sizeToSteps_stab = MapValue(groupObj.size, _avgGpSizeRange, _midiScale);
-            SendCC(ccNumber, sizeToSteps_stab, channel);
+            SendCC(120, sizeToSteps_stab, 4);
             break;
 
         // sub bass sequences 
         case 4:
             let sizeToSteps_bass = MapValue(groupObj.size, _avgGpSizeRange, _midiScale);
-            SendCC(ccNumber, sizeToSteps_bass, channel);
+            SendCC(120, sizeToSteps_bass, 5);
             break;
 
         // volumn toggle for pluck, stab, basss
         case 5:
             let speedToVol = MapValue(groupObj.speed, _avgSpeedRange, _midiScale);
-            let channels = [3, 5, 7]; // dummy
+            let channels = [2,3,4]; // dummy
             let entryToChannel = MapValue(groupObj.entryPosition, _entryPosRange, [0, 2]);
 
-            SendCC(ccNumber, speedToVol, channels[entryToChannel]);
+            SendCC(125, speedToVol, channels[entryToChannel]);
     }
 }
 
@@ -141,6 +168,7 @@ function sendToMidi(groupObj, exiting) {
 function MapValue(value, oldRange, newRange) {
     let ratio = (newRange[1] - newRange[0]) / (oldRange[1] - oldRange[0]);
     let mappedValue = Math.round(ratio * (value - oldRange[0]) + newRange[0]);
+    console.log(typeof mappedValue);
 
     console.log(`Map ${value} from ${oldRange[0]} - ${oldRange[1]} to ${newRange[0]} - ${newRange[1]} (ratio of ${ratio}) = ${mappedValue}`);
 
@@ -167,10 +195,11 @@ function SendNote(note, channel) {
         return;
     }
 
+    
     const velocity = 0.9;
-    const duration = 50;
+    const duration = 1000;
 
-    selectedOutput.playNote(note, channel, { velocity });
+    selectedOutput.playNote(note, channel,{ velocity });
     setTimeout(() => {
         selectedOutput.stopNote(note, channel);
     }, duration);
