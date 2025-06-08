@@ -1,5 +1,12 @@
-let selectedOutput = null;
+
+//Define number of MIDI busses used as outputs
+let selectedOutput1 = null; 
+let selectedOutput2 = null;
+let selectedOutput3 = null;
+
 let selectedInput = null;
+let entryToNote = null; // Stores last transmitted MIDI-Note
+
 const _midiScale = [0, 127];
 const _avgGpSizeRange = [3, 15];
 const _avgSpeedRange = [0, 6];
@@ -15,12 +22,12 @@ function onEnabled() {
     if (WebMidi.outputs.length < 1) {
     outputsDiv.innerHTML = "No MIDI output devices detected.";
   } else {
+    selectedOutput1 = WebMidi.outputs[0];
+    selectedOutput2 = WebMidi.outputs[1];
+    selectedOutput3 = WebMidi.outputs[2];
 
-    console.log(WebMidi.outputs[1]);
-    selectedOutput = WebMidi.outputs[0];
 
-
-    if (!selectedOutput) { // dummy output and assign later depend what it is call on the final computer 
+    if (!selectedOutput1) { // check first or all outputs
         alert("No output selected!");
         return;
     }}
@@ -110,12 +117,12 @@ function sendToMidi(groupObj, exiting) {
         // pitch 
         case 0:
             // note
-            let entryToNote = MapValue(groupObj.entryPosition, _entryPosRange, [24,36]);
-            SendNote(entryToNote, 1);
+            entryToNote = MapValue(groupObj.entryPosition, _entryPosRange, [24,36]);
+            SendNote(entryToNote, 1, selectedOutput1);
 
             // chord partials
             let sizeToChord = MapValue(groupObj.size, _avgGpSizeRange, _midiScale);
-            SendCC(120, sizeToChord, 1);
+            SendCC(120, sizeToChord, 1, selectedOutput1);
 
             break;
 
@@ -123,44 +130,46 @@ function sendToMidi(groupObj, exiting) {
         case 1:
             // LFO speed/frequency 
             let speedTofreq_pluck = MapValue(groupObj.speed, _avgSpeedRange, _midiScale);
-            SendCC(120, speedTofreq_pluck, 2);
+            SendCC(121, speedTofreq_pluck, 2, selectedOutput2);
+            SendNote(0 + entryToNote, 2, selectedOutput2); // Update pitch and trigger 'impact' modulation
 
             // depth
             let sizeToDepth_pluck = MapValue(groupObj.size, _avgGpSizeRange, _midiScale);
-            SendCC(121, sizeToDepth_pluck, 2);
+            SendCC(122, sizeToDepth_pluck, 2, selectedOutput2);
             break;
 
         // lead stab LFO 
         case 2:
                 // LFO speed/frequency 
             let speedTofreq_stab = MapValue(groupObj.speed, _avgSpeedRange, _midiScale);
-            SendCC(120, speedTofreq_stab, 3);
+            SendCC(121, speedTofreq_stab, 3, selectedOutput3);
+            SendNote(0 + entryToNote, 2, selectedOutput3);
 
             // depth
             let sizeToDepth_stab = MapValue(groupObj.size, _avgGpSizeRange, _midiScale);
-            SendCC(121, sizeToDepth_stab, 3);
+            SendCC(122, sizeToDepth_stab, 3, selectedOutput3);
             break;
 
 
         // lead stab sequences
         case 3:
             let sizeToSteps_stab = MapValue(groupObj.size, _avgGpSizeRange, _midiScale);
-            SendCC(120, sizeToSteps_stab, 4);
+            SendCC(123, sizeToSteps_stab, 4, selectedOutput1);
             break;
 
         // sub bass sequences 
         case 4:
             let sizeToSteps_bass = MapValue(groupObj.size, _avgGpSizeRange, _midiScale);
-            SendCC(120, sizeToSteps_bass, 5);
+            SendCC(123, sizeToSteps_bass, 5, selectedOutput2);
             break;
 
         // volumn toggle for pluck, stab, basss
         case 5:
             let speedToVol = MapValue(groupObj.speed, _avgSpeedRange, _midiScale);
-            let channels = [2,3,4]; // dummy
+            let channels = [2,4,5]; // dummy
             let entryToChannel = MapValue(groupObj.entryPosition, _entryPosRange, [0, 2]);
 
-            SendCC(125, speedToVol, channels[entryToChannel]);
+            SendCC(125, speedToVol, channels[entryToChannel], selectedOutput1);
     }
 }
 
@@ -184,14 +193,14 @@ function LFOMode(speed, groupSize, ccNumber, channel) {
 
     // depth
     let sizeToDepth = MapValue(groupSize, _avgGpSizeRange, _midiScale);
-    SendCC(ccNumber, sizeToDepth, channel);
+    SendCC(ccNumber, sizeToDepth, channel, sel);
 
 }
 
 // === Outgoing note ===
-function SendNote(note, channel) {
-    if (!selectedOutput) { // dummy output and assign later depend what it is call on the final computer 
-        alert("No output selected!");
+function SendNote(note, channel, output) {
+    if (!output) { // dummy output and assign later depend what it is call on the final computer 
+        alert("No Note output selected!");
         return;
     }
 
@@ -199,22 +208,23 @@ function SendNote(note, channel) {
     const velocity = 0.9;
     const duration = 1000;
 
-    selectedOutput.playNote(note, channel,{ velocity });
+    output.playNote(note, channel,{ velocity });
     setTimeout(() => {
-        selectedOutput.stopNote(note, channel);
+        output.stopNote(note, channel);
     }, duration);
 
     console.log(`Sent ${note} to channel ${channel}`);
 };
 
 // === Outgoing CC ===
-function SendCC(ccNumber, value, channel) {
-    if (!selectedOutput) {
-        alert("No output selected!");
+function SendCC(ccNumber, value, channel, output) {
+    console.log(output);
+    if (!output) {
+        alert("No CC output selected!");
         return;
     }
 
-    selectedOutput.sendControlChange(ccNumber, value, channel);
+    output.sendControlChange(ccNumber, value, channel);
 
     console.log(`Sent CC ${ccNumber} = ${value} to channel ${channel}`);
 };
