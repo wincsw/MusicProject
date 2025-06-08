@@ -1,8 +1,8 @@
-# Clusters
+# Clusters fork with Musification
 
-This is the Clusters particle simulator in JavaScript
+This is a fork of the [Clusters particle simulator](https://github.com/Ventrella/Clusters) in JavaScript, by Jeffrey Ventrella. This fork adds musification with MIDI mappings and a minimal UI using [lil-gui](https://lil-gui.georgealways.com/).
 
-View it online: 
+View original online: 
 https://ventrella.com/Clusters/
 
 Overview here:
