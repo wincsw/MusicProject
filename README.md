@@ -15,7 +15,7 @@ The MIDI application uses virtual MIDI buses to route MIDI from the Clusters sim
 
 # MIDI Channel and CC Mappings
 
-For intelligibilty the CC controls for each channel in Live is assigned to its own MIDI channel and the same type of control are assigned the same CC numbers on their respecitve MIDI channels. --refer to the table---
+For intelligibilty the CC controls for each channel in Live is assigned to its own MIDI channel and the same type of control are assigned the same CC numbers on their respecitve MIDI channels (see Table 1). 
 To set up the template project as configured in the MIDI.js file, the MIDI input setup for each Live channel is as follows:
 - Main pad: IAC-driver (Bus 1), All Channels
 - Pluck: IAC-driver (Bus 2), All Channels
@@ -23,9 +23,13 @@ To set up the template project as configured in the MIDI.js file, the MIDI input
 - Bass: IAC-driver (Bus 1), All Channels
 
 
+![Alt text](images/CC-mapping.png  "Table 1: MIDI Channel and CC number distribution")
+
 In order not to interfere with reserved CC numbers of instruments used in the template project CC numbers 120-125 are used. This does not abide by MIDI standard (https://studiocode.dev/resources/midi-cc/) but can be easily changed in the MIDI.js file. 
 
 # Template MIDI Effects
+
+The Clusters MIDI Template project is set up with stock Ableton Live instruments, all except Main Pad channel which needs an instrument with a 'Hold' functon to play continuous sound, such as the Granulator III or many VST instruments.
 
 The Ableton MIDI effect rack allows a user to receive and modify incoming MIDI to a Live channel, before it is used by a MIDI instrument. In this project, this is used to vary the same (or small amounts of) MIDI information and adjust it to fit different purposes. An incoming MIDI note can be transposed to a different octave, multiplied into a chord, or used as a trigger for a MIDI envelope.
 For each audiochannel in this template, multiple configurations of MIDI manipulation are set up in different chains in the effect rack. This could be for example five chains where an incoming MIDI note is turned in to five different chords. Our chain selector utilizes a range of 0-127 within which any number of chains are evenly distributed (C1: 0-9, C2: 10-19, and so on). Using a macro control to move the chain selector, this allows us to use the same full range (0-127) of MIDI CC messages in all applications of CC messaging in this project.
