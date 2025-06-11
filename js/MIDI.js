@@ -154,13 +154,13 @@ function sendToMidi(groupObj, exiting) {
         // lead stab sequences
         case 3:
             let sizeToSteps_stab = MapValue(groupObj.size, _avgGpSizeRange, _midiScale);
-            SendCC(123, sizeToSteps_stab, 4, selectedOutput1);
+            SendCC(124, sizeToSteps_stab, 4, selectedOutput3);
             break;
 
         // sub bass sequences 
         case 4:
             let sizeToSteps_bass = MapValue(groupObj.size, _avgGpSizeRange, _midiScale);
-            SendCC(123, sizeToSteps_bass, 5, selectedOutput2);
+            SendCC(124, sizeToSteps_bass, 5, selectedOutput1);
             break;
 
         // volumn toggle for pluck, stab, basss
